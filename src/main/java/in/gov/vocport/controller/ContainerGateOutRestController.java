@@ -21,7 +21,7 @@ public class ContainerGateOutRestController {
 	@Autowired
 	private ContainerGateOutService service;
 
-	@PostMapping("/api/gateOut")
+	@PostMapping("/gateOut")
 	public ResponseEntity<?> saveGateOut(@Valid @RequestBody ContainerGateInDto dto) {
 
 //		if (bindingResult.hasErrors()) {
@@ -47,7 +47,7 @@ public class ContainerGateOutRestController {
 		return ResponseEntity.ok(resp);
 	}
 	
-	@PostMapping("/api/gateOutUpdate")
+	@PostMapping("/gateOutUpdate")
 	public ResponseEntity<?> saveGateOutUpdate(@Valid @RequestBody ContainerGateInDto dto) {
 
 //		if (bindingResult.hasErrors()) {

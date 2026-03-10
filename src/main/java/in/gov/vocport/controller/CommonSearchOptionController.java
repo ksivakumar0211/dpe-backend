@@ -32,7 +32,7 @@ public class CommonSearchOptionController {
 	@Autowired
 	private AddEditServiceCharge addEditServiceCharge;
 	
-    @GetMapping("/api/ports")
+    @GetMapping("/ports")
     public PagedResponse<PortDto> getPorts(
             @RequestParam(name = "q", required = false) String q,
             @RequestParam(name = "page", defaultValue = "0") int page,
@@ -41,7 +41,7 @@ public class CommonSearchOptionController {
         return gateInService.searchPortOfDestinations(q, page, size);
     }
 
-    @GetMapping("/api/shippers")
+    @GetMapping("/shippers")
     public PagedResponse<ShipperDto> getShippers(
             @RequestParam(name = "q", required = false) String q,
             @RequestParam(name = "page", defaultValue = "0") int page,
@@ -50,7 +50,7 @@ public class CommonSearchOptionController {
         return gateInService.searchShippers(q, page, size);
     }
 
-    @GetMapping("/api/vessels")
+    @GetMapping("/vessels")
     public PagedResponse<VesselDto> getVessels(
     		@RequestParam(name = "q") String q,
     		@RequestParam(name = "page") int page,
@@ -59,7 +59,7 @@ public class CommonSearchOptionController {
         return gateInService.searchVessels(q, page, size);
     }
     
-    @GetMapping("/api/locations")
+    @GetMapping("/locations")
     public PagedResponse<LocationDto> getToLocations(
             @RequestParam(name = "q", required = false) String q,
             @RequestParam(name = "exclude") String excludeCode,
@@ -69,7 +69,7 @@ public class CommonSearchOptionController {
         return gateInService.searchToLocations(q, excludeCode, page, size);
     }
     
-    @GetMapping("/api/agents")
+    @GetMapping("/agents")
     public PagedResponse<AgentDto> getAgents(
             @RequestParam(name = "q", required = false) String q,
             @RequestParam(name = "page", defaultValue = "0") int page,
@@ -78,7 +78,7 @@ public class CommonSearchOptionController {
         return gateInService.searchAgents(q, page, size);
     }
     
-    @GetMapping("/api/cargo")
+    @GetMapping("/cargo")
     public PagedResponse<CargoDto> getCargo(
             @RequestParam(name = "q", required = false) String q,
             @RequestParam(name = "page", defaultValue = "0") int page,
@@ -87,7 +87,7 @@ public class CommonSearchOptionController {
         return gateInService.searchCargo(q, page, size);
     }
     
-    @GetMapping("/api/liners")
+    @GetMapping("/liners")
     public PagedResponse<LinerDto> getLiners(
             @RequestParam(name = "q", required = false) String q,
             @RequestParam(name = "page", defaultValue = "0") int page,
@@ -96,7 +96,7 @@ public class CommonSearchOptionController {
         return gateInService.searchLiners(q, page, size);
     }
     
-    @GetMapping("/api/gateOutFromlocations")
+    @GetMapping("/gateOutFromlocations")
     public PagedResponse<LocationDto> gateOutFromlocations(
             @RequestParam(name = "q", required = false) String q,
             @RequestParam(name = "page", defaultValue = "0") int page,
@@ -105,7 +105,7 @@ public class CommonSearchOptionController {
         return gateOutService.searchGateOutFromlocations(q, page, size);
     }
     
-    @GetMapping("/api/gateOutTolocations")
+    @GetMapping("/gateOutTolocations")
     public PagedResponse<LocationDto> gateOutTolocations(
             @RequestParam(name = "q", required = false) String q,
             @RequestParam(name = "page", defaultValue = "0") int page,
@@ -114,7 +114,7 @@ public class CommonSearchOptionController {
         return gateOutService.searchGateOutTolocations(q, page, size);
     }
     
-    @GetMapping("/api/gateOutContainerNo")
+    @GetMapping("/gateOutContainerNo")
     public PagedResponse<ContainerNoDto> gateOutContainerNo(
             @RequestParam(name = "q", required = false) String q,
             @RequestParam(name = "page", defaultValue = "0") int page,
@@ -123,7 +123,7 @@ public class CommonSearchOptionController {
         return gateOutService.gateOutContainerNo(q, page, size);
     }
     
-    @GetMapping("/api/containerNoForServiceAdd")
+    @GetMapping("/containerNoForServiceAdd")
     public PagedResponse<ContainerNoDto> containerNoForServiceAdd(
             @RequestParam(name = "q", required = false) String q,
             @RequestParam(name = "page", defaultValue = "0") int page,
@@ -132,7 +132,7 @@ public class CommonSearchOptionController {
         return addEditServiceCharge.searchContainerNoForServiceAdd(q, page, size);
     }
     
-    @GetMapping("/api/containerInPortDetails")
+    @GetMapping("/containerInPortDetails")
     public ResponseEntity<ContainerInPortDto> getContainerInPortDetails(
             @RequestParam String containerNo) {
         ContainerInPortDto dto = addEditServiceCharge.getContainerInPortDetails(containerNo);

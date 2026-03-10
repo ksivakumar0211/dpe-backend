@@ -18,7 +18,7 @@ public class ContainerGateInRestController {
 	@Autowired
 	private ContainerGateInService service;
 
-	@PostMapping("/api/gatein")
+	@PostMapping("/gatein")
 	public ResponseEntity<?> saveGateIn(@Valid @RequestBody ContainerGateInDto dto) {
 		String userCode = "SYSTEM";
 		try {
@@ -34,7 +34,7 @@ public class ContainerGateInRestController {
 		return ResponseEntity.ok(resp);
 	}
 	
-	@PostMapping("/api/gateinUpdate")
+	@PostMapping("/gateinUpdate")
 	public ResponseEntity<?> saveGateInUpdate(@Valid @RequestBody ContainerGateInDto dto) {
 
 		String userCode = "SYSTEM";
