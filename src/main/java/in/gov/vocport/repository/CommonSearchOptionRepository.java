@@ -144,15 +144,31 @@ public class CommonSearchOptionRepository {
 
 		int offset = page * size;
 
+//		String dataSql = """
+//				SELECT v.VESSEL_NO, v.VESSEL_NAME, v.VOYAGE_NUMBER
+//				""" + base + """
+//				ORDER BY v.VESSEL_NAME ASC
+//				OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
+//				""";
 		String dataSql = """
-				SELECT v.VESSEL_NO, v.VESSEL_NAME, v.VOYAGE_NUMBER
-				""" + base + """
-				ORDER BY v.VESSEL_NAME ASC
-				OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
-				""";
+        SELECT *
+        FROM (
+            SELECT v.VESSEL_NO,
+                   v.VESSEL_NAME,
+                   v.VOYAGE_NUMBER,
+                   ROWNUM rnum
+            FROM (
+                SELECT v.VESSEL_NO, v.VESSEL_NAME, v.VOYAGE_NUMBER
+                """ + base + """
+                ORDER BY v.VESSEL_NAME ASC
+            ) v
+            WHERE ROWNUM <= ?
+        )
+        WHERE rnum > ?
+        """;
 
+		params.add(offset + size); // upper bound
 		params.add(offset);
-		params.add(size);
 
 		@SuppressWarnings("deprecation")
 		List<VesselDto> content = jdbcTemplate.query(dataSql, params.toArray(),
