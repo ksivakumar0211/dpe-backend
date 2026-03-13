@@ -98,7 +98,7 @@ public class ServiceChargeController {
             @RequestParam(required = false) Integer numberOfDays) {
         return jdbcTemplate.queryForObject(
                 "SELECT CT_DPE_PKG.FN_GET_RATE_ALL(?, ?, ?, ?, ?) FROM DUAL",
-                numberOfDays == null ? new Object[]{serviceId, containerSize, loadingStatus, foreignCoastalFlag, numberOfDays} : new Object[]{serviceId, containerSize, loadingStatus, foreignCoastalFlag, numberOfDays},
+                new Object[]{serviceId, containerSize, loadingStatus, foreignCoastalFlag, numberOfDays},
                 Double.class
         );
     }
