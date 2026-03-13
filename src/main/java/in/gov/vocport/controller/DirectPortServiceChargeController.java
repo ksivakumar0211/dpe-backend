@@ -1,5 +1,6 @@
 package in.gov.vocport.controller;
 
+import in.gov.vocport.entities.CtThDirectServiceChg;
 import in.gov.vocport.service.DirectPortServiceChargeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,9 +17,9 @@ public class DirectPortServiceChargeController {
     private final DirectPortServiceChargeService service;
 
     @PostMapping("/add-edit")
-    public ResponseEntity addEditServiceCharge(@RequestBody Map<String, Object> object, @RequestParam String userId) {
+    public ResponseEntity addEditServiceCharge(@RequestBody CtThDirectServiceChg ctThDirectServiceChg, @RequestParam String userId) {
         Map<String, Object> result = new HashMap<>();
-        service.addServiceCharge(object, userId, result);
+        service.addServiceCharge(ctThDirectServiceChg, userId, result);
         return result.containsKey("error") ? new ResponseEntity<>(result, HttpStatus.BAD_REQUEST) : ResponseEntity.ok(result);
     }
 
