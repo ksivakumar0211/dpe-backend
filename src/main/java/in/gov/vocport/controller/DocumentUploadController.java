@@ -19,9 +19,10 @@ public class DocumentUploadController {
     private final DocumentUploadService documentUploadService;
 
     @GetMapping("/get/vessels")
-    public ResponseEntity getVesselsNo(@RequestParam(required = false) String vesselsNo) {
+    public ResponseEntity getVesselsNo(@RequestParam(required = false) String vesselsNo, @RequestParam int page,
+                                       @RequestParam int size) {
         Map<String, Object> result = new HashMap<>();
-        documentUploadService.getVesselsNo(vesselsNo, result);
+        documentUploadService.getVesselsNo(vesselsNo, page, size, result);
         return result.containsKey("error") ? new ResponseEntity<>(result, HttpStatus.BAD_REQUEST) : new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
