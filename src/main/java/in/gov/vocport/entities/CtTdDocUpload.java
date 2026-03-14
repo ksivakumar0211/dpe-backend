@@ -1,5 +1,6 @@
 package in.gov.vocport.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -62,6 +63,7 @@ public class CtTdDocUpload {
     private LocalDate modifiedOn;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "VESSEL_NO", insertable = false, updatable = false)
+    @JsonBackReference
+    @JoinColumn(name = "VESSEL_NO", referencedColumnName = "VESSEL_NO", insertable = false, updatable = false)
     private CtThDocUpload header;
 }

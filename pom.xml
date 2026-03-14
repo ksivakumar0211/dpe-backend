@@ -114,6 +114,12 @@
 			<version>0.12.3</version>
 			<scope>runtime</scope>
 		</dependency>
+		<!-- Source: https://mvnrepository.com/artifact/com.hierynomus/smbj -->
+		<dependency>
+			<groupId>com.hierynomus</groupId>
+			<artifactId>smbj</artifactId>
+			<version>0.14.0</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
