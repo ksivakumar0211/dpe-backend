@@ -1,0 +1,28 @@
+{
+  "title": "CONTAINER SERVICE REPORT",
+
+  "parameters": [
+    {"label": "FROM DATE", "field": "fromDate"},
+    {"label": "TO DATE", "field": "toDate"}
+  ],
+
+  "headerFields": [
+    {"label": "AGENT NAME", "field": "agentName"},
+    {"label": "AGENT CODE", "field": "agentCode"},
+    {"label": "ZONE", "field": "zone"}
+  ],
+
+  "sections": [
+    {
+      "title": "CONTAINER",
+      "groupField": "containerNo",
+
+      "columns": [
+        {"header": "SL.NO", "field": "slNo", "align": "CENTER"},
+        {"header": "SERVICE TYPE", "field": "serviceType", "align": "LEFT"},
+        {"header": "RATE", "field": "rate", "align": "RIGHT"},
+        {"header": "AMOUNT", "field": "amount", "align": "RIGHT"}
+      ]
+    }
+  ]
+}
