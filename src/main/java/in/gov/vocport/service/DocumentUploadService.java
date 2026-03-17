@@ -48,8 +48,13 @@ public class DocumentUploadService {
 //        parameters.add(new ProcedureKeyValueDTO("p_refcur_vessel_info", null, void.class, ParameterMode.REF_CURSOR));
 //        List<VesselsInfoDto> vesselsInfos = (List<VesselsInfoDto>) repository.callStoredProcedure("CT_DPE_PKG.GET_VESSEL_INFO_PR", parameters, new ArrayList<VesselsInfoDto>(), "vesselsInfoDto");
 
-        Pageable pageable = PageRequest.of(page, size);
-        Page<VesselsInfoDto> vesselsInfos = ctThDocUploadRepository.findVessels(vesselsNo, pageable);
+//        int page = pageable.getPageNumber();
+//        int size = pageable.getPageSize();
+
+        int startRow = page * size;
+        int endRow = startRow + size;
+//        Pageable pageable = PageRequest.of(page, size);
+        List<VesselsInfoDto> vesselsInfos = ctThDocUploadRepository.findVessels(vesselsNo, startRow, endRow);
         result.put("success", vesselsInfos);
     }
 
