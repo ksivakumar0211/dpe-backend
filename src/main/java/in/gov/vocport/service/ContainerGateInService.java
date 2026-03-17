@@ -1,32 +1,29 @@
 package in.gov.vocport.service;
 
+import in.gov.vocport.dto.*;
+import in.gov.vocport.repository.GenericProcedureRepository;
+import jakarta.persistence.ParameterMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import in.gov.vocport.dto.AgentDto;
-import in.gov.vocport.dto.CargoDto;
-import in.gov.vocport.dto.ContainerGateInDto;
-import in.gov.vocport.dto.GateInRowDto;
-import in.gov.vocport.dto.GateInSearchCriteria;
-import in.gov.vocport.dto.LinerDto;
-import in.gov.vocport.dto.LocationDto;
-import in.gov.vocport.dto.PagedResponse;
-import in.gov.vocport.dto.PortDto;
-import in.gov.vocport.dto.ShipperDto;
-import in.gov.vocport.dto.VesselDto;
 import in.gov.vocport.entities.ContainerGateInEntity;
 import in.gov.vocport.repository.ContainerGateInRepository;
 import in.gov.vocport.repository.ContainerGateInSearchRepository;
 import in.gov.vocport.repository.CommonSearchOptionRepository;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class ContainerGateInService {
 	
 	@Autowired
 	private CommonSearchOptionRepository commonSearchOptionRepository;
+
+	private final GenericProcedureRepository genericProcedureRepository;
 
 	@Autowired
 	private ContainerGateInRepository repository;
@@ -36,9 +33,10 @@ public class ContainerGateInService {
 
 	private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
-	public ContainerGateInService(CommonSearchOptionRepository gateInRepository) {
+	public ContainerGateInService(CommonSearchOptionRepository gateInRepository, GenericProcedureRepository genericProcedureRepository) {
 		this.commonSearchOptionRepository = gateInRepository;
-	}
+        this.genericProcedureRepository = genericProcedureRepository;
+    }
 
 	public String getNewChitNo() {
 		return commonSearchOptionRepository.generateChitNo();
@@ -137,5 +135,12 @@ public class ContainerGateInService {
 
 	public PagedResponse<GateInRowDto> searchGateIn(GateInSearchCriteria criteria, int page, int size) {
 		return searchRepo.search(criteria, page, size);
+	}
+
+	public void getFromLocation( Map<String, Object> result) {
+        List<ProcedureKeyValueDTO> parameters = new ArrayList<>();
+        parameters.add(new ProcedureKeyValueDTO("p_refcur_fromloc", null, void.class, ParameterMode.REF_CURSOR));
+        List<LocationInfoDto> locationInfoList = (List<LocationInfoDto>) genericProcedureRepository.callStoredProcedure("CT_DPE_PKG.CT_DPE_GATE_IN_FROM_LOC_PR", parameters, new ArrayList<LocationInfoDto>(), "LocationInfoDto");
+		result.put("success", locationInfoList);
 	}
 }

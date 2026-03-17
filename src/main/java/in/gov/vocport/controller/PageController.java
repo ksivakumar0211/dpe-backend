@@ -312,5 +312,11 @@ public class PageController {
 		model.addAttribute("currentPath", request.getRequestURI());
 		return "under_construction";
 	}
-	
+
+	@GetMapping("/get/fromLocation")
+	public ResponseEntity getVesselsNo() {
+		Map<String, Object> result = new HashMap<>();
+		gateInService.getFromLocation(result);
+		return result.containsKey("error") ? new ResponseEntity<>(result, HttpStatus.BAD_REQUEST) : new ResponseEntity<>(result, HttpStatus.OK);
+	}
 }
