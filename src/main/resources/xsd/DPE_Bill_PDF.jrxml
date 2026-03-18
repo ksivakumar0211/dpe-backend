@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DPE_Bill_PDF" language="groovy" pageWidth="600" pageHeight="842" columnWidth="560" leftMargin="20" rightMargin="20" topMargin="5" bottomMargin="5">
+    <parameter name="containerNo" class="java.lang.String"/>
+    <parameter name="p2prequestiD" class="java.lang.String"/>
+    <queryString>
+        <![CDATA[select container_no,gate_in_date_time,admission_chit_no,agent_customer_name,
+boe_no,ten_delivery_date,act_delivery_date,cfs_no,cfs_date,
+service_type_cd,service_name,service_from_date,service_to_date,
+rate,amount,cgst,sgst,total_val,payment_no,payment_date,
+service_remarks,sap_ref_no,p2prequestid,status,max_gate_in_time,
+ref_tran_no,agent_cd,
+case when $P{containerNo} is null then
+sum_total_pay_word
+else
+sum_total_cont_word
+end value_in_word
+from dpe_bill_as_payment_vw
+where container_no = nvl($P{containerNo},container_no)
+and P2PREQUESTID = nvl($P{p2prequestiD},P2PREQUESTID)]]>
+    </queryString>
+    <field name="CONTAINER_NO" class="java.lang.String">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="GATE_IN_DATE_TIME" class="java.sql.Timestamp">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="ADMISSION_CHIT_NO" class="java.lang.String">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="AGENT_CUSTOMER_NAME" class="java.lang.String">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="BOE_NO" class="java.lang.String">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="TEN_DELIVERY_DATE" class="java.sql.Timestamp">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="ACT_DELIVERY_DATE" class="java.sql.Timestamp">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="CFS_NO" class="java.lang.String">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="CFS_DATE" class="java.sql.Timestamp">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="SERVICE_TYPE_CD" class="java.lang.String">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="SERVICE_NAME" class="java.lang.String">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="SERVICE_FROM_DATE" class="java.sql.Timestamp">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="SERVICE_TO_DATE" class="java.sql.Timestamp">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="RATE" class="java.math.BigDecimal">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="AMOUNT" class="java.math.BigDecimal">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="CGST" class="java.math.BigDecimal">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="SGST" class="java.math.BigDecimal">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="TOTAL_VAL" class="java.math.BigDecimal">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="PAYMENT_NO" class="java.lang.String">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="PAYMENT_DATE" class="java.sql.Timestamp">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="SERVICE_REMARKS" class="java.lang.String">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="SAP_REF_NO" class="java.lang.String">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="P2PREQUESTID" class="java.lang.String">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="STATUS" class="java.lang.String">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="MAX_GATE_IN_TIME" class="java.sql.Timestamp">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="REF_TRAN_NO" class="java.lang.String">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="AGENT_CD" class="java.lang.String">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <field name="VALUE_IN_WORD" class="java.lang.String">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
+    <variable name="sumTotal" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{TOTAL_VAL}]]></variableExpression>
+    </variable>
+    <variable name="sum_gst" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{CGST}+$F{SGST}]]></variableExpression>
+    </variable>
+    <variable name="sumAmount" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{AMOUNT}]]></variableExpression>
+    </variable>
+    <group name="container" isStartNewPage="true">
+        <groupExpression><![CDATA[$F{CONTAINER_NO}]]></groupExpression>
+        <groupHeader>
+            <band height="119">
+                <staticText>
+                    <reportElement x="0" y="43" width="80" height="12"/>
+                    <textElement>
+                        <font size="8" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[Container No:]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="290" y="5" width="80" height="12"/>
+                    <textElement>
+                        <font size="8" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[Receipt No:]]></text>
+                </staticText>
+                <textField isBlankWhenNull="true">
+                    <reportElement x="370" y="5" width="120" height="12"/>
+                    <textElement>
+                        <font size="8"/>
+                    </textElement>
+                    <textFieldExpression class="java.lang.String"><![CDATA[$F{REF_TRAN_NO}]]></textFieldExpression>
+                </textField>
+                <textField pattern="dd/MM/yyyy HH.mm.ss" isBlankWhenNull="true">
+                    <reportElement x="370" y="43" width="120" height="12"/>
+                    <textElement>
+                        <font size="8"/>
+                    </textElement>
+                    <textFieldExpression class="java.util.Date"><![CDATA[$F{PAYMENT_DATE}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="290" y="43" width="80" height="12"/>
+                    <textElement>
+                        <font size="8" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[Payment Date:]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="65" y="92" width="45" height="24"/>
+                    <textElement>
+                        <font size="7" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[CFS Date]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="285" y="92" width="40" height="24"/>
+                    <textElement textAlignment="Center">
+                        <font size="7" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[Service
+From Dt]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement stretchType="RelativeToBandHeight" x="375" y="92" width="40" height="24"/>
+                    <textElement textAlignment="Right">
+                        <font size="7" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[Rate]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="115" y="92" width="165" height="24"/>
+                    <textElement>
+                        <font size="7" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[Service]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="510" y="92" width="50" height="24"/>
+                    <textElement textAlignment="Right">
+                        <font size="7" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[Total]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="420" y="92" width="45" height="24"/>
+                    <textElement textAlignment="Right">
+                        <font size="7" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[Amount]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="0" y="92" width="65" height="24"/>
+                    <textElement>
+                        <font size="7" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[CFS No]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="90" y="43" width="80" height="12"/>
+                    <textElement>
+                        <font size="8"/>
+                    </textElement>
+                    <textFieldExpression class="java.lang.String"><![CDATA[$F{CONTAINER_NO}]]></textFieldExpression>
+                </textField>
+                <line>
+                    <reportElement x="0" y="84" width="560" height="1"/>
+                    <graphicElement>
+                        <pen lineWidth="0.5"/>
+                    </graphicElement>
+                </line>
+                <line>
+                    <reportElement x="0" y="118" width="560" height="1"/>
+                    <graphicElement>
+                        <pen lineWidth="0.5"/>
+                    </graphicElement>
+                </line>
+                <textField>
+                    <reportElement stretchType="RelativeToBandHeight" x="90" y="22" width="471" height="12" isPrintWhenDetailOverflows="true"/>
+                    <textElement>
+                        <font size="8"/>
+                    </textElement>
+                    <textFieldExpression class="java.lang.String"><![CDATA[$F{AGENT_CUSTOMER_NAME}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="0" y="22" width="80" height="12"/>
+                    <textElement>
+                        <font size="8" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[Agent Name:]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="330" y="92" width="40" height="24"/>
+                    <textElement textAlignment="Center">
+                        <font size="7" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[Service
+To Date]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="470" y="92" width="35" height="24"/>
+                    <textElement textAlignment="Right">
+                        <font size="7" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[GST]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="0" y="5" width="80" height="12"/>
+                    <textElement>
+                        <font size="8" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[Agent Code:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement stretchType="RelativeToBandHeight" x="90" y="5" width="60" height="12" isPrintWhenDetailOverflows="true"/>
+                    <textElement>
+                        <font size="8"/>
+                    </textElement>
+                    <textFieldExpression class="java.lang.String"><![CDATA[$F{AGENT_CD}]]></textFieldExpression>
+                </textField>
+            </band>
+        </groupHeader>
+        <groupFooter>
+            <band height="200">
+                <textField pattern="###0.00" isBlankWhenNull="true">
+                    <reportElement x="510" y="0" width="50" height="12"/>
+                    <textElement textAlignment="Right">
+                        <font size="8" isBold="true"/>
+                    </textElement>
+                    <textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumTotal}]]></textFieldExpression>
+                </textField>
+                <textField pattern="###0.00" isBlankWhenNull="true">
+                    <reportElement x="470" y="0" width="35" height="12"/>
+                    <textElement textAlignment="Right">
+                        <font size="8" isBold="true"/>
+                    </textElement>
+                    <textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sum_gst}]]></textFieldExpression>
+                </textField>
+                <textField pattern="###0.00" isBlankWhenNull="true">
+                    <reportElement x="420" y="0" width="45" height="12"/>
+                    <textElement textAlignment="Right">
+                        <font size="8" isBold="true"/>
+                    </textElement>
+                    <textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumAmount}]]></textFieldExpression>
+                </textField>
+                <line>
+                    <reportElement x="0" y="22" width="560" height="1"/>
+                    <graphicElement>
+                        <pen lineWidth="0.5"/>
+                    </graphicElement>
+                </line>
+                <textField isBlankWhenNull="true">
+                    <reportElement x="107" y="50" width="80" height="12"/>
+                    <textElement>
+                        <font size="8"/>
+                    </textElement>
+                    <textFieldExpression class="java.lang.String"><![CDATA[$F{P2PREQUESTID}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="0" y="50" width="100" height="12"/>
+                    <textElement>
+                        <font size="8" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[Transaction Id:]]></text>
+                </staticText>
+                <textField isBlankWhenNull="true">
+                    <reportElement x="107" y="30" width="453" height="12"/>
+                    <textElement>
+                        <font size="8"/>
+                    </textElement>
+                    <textFieldExpression class="java.lang.String"><![CDATA[$F{VALUE_IN_WORD}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="0" y="30" width="100" height="12"/>
+                    <textElement>
+                        <font size="8" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[Total Amount in Words:]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="383" y="180" width="175" height="12"/>
+                    <textElement>
+                        <font size="8" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[Signature (ATM/Supervisor )]]></text>
+                </staticText>
+            </band>
+        </groupFooter>
+    </group>
+    <pageHeader>
+        <band height="212" splitType="Stretch">
+            <staticText>
+                <reportElement stretchType="RelativeToBandHeight" x="0" y="74" width="560" height="83"/>
+                <textElement textAlignment="Center">
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[BHARATHI NAGAR, ADMINISTRATIVE OFFICE,
+TUTICORIN 628004,
+TAMIL NADU
+Web : www.vocport.gov.in
+Phone : 0461 - 2372133                              Fax : 0461 - 2352104
+  E-mail  :  fa@vocport.gov.in]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="0" y="174" width="560" height="15"/>
+                <textElement textAlignment="Center">
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[DIRECT PORT ENTRY BILL]]></text>
+            </staticText>
+            <image>
+                <reportElement x="0" y="2" width="560" height="92"/>
+                <imageExpression class="java.lang.String"><![CDATA[getClass().getResource("/photo/login_header.bmp").getPath()]]></imageExpression>
+            </image>
+            <staticText>
+                <reportElement x="0" y="157" width="80" height="12"/>
+                <textElement>
+                    <font size="8" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Report Run Date:]]></text>
+            </staticText>
+            <textField pattern="dd/MM/yyyy">
+                <reportElement x="80" y="157" width="111" height="12"/>
+                <textElement>
+                    <font size="8"/>
+                </textElement>
+                <textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageHeader>
+    <detail>
+        <band height="20" splitType="Stretch">
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                <reportElement x="0" y="0" width="65" height="12"/>
+                <textElement>
+                    <font size="7"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String"><![CDATA[$F{CFS_NO}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy HH.mm.ss" isBlankWhenNull="true">
+                <reportElement x="65" y="0" width="45" height="12"/>
+                <textElement>
+                    <font size="7"/>
+                </textElement>
+                <textFieldExpression class="java.util.Date"><![CDATA[$F{CFS_DATE}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                <reportElement x="115" y="0" width="165" height="12"/>
+                <textElement>
+                    <font size="7"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String"><![CDATA[$F{SERVICE_NAME}]]></textFieldExpression>
+            </textField>
+            <line>
+                <reportElement positionType="Float" x="0" y="19" width="560" height="1"/>
+                <graphicElement>
+                    <pen lineWidth="0.5"/>
+                </graphicElement>
+            </line>
+            <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy HH.mm.ss" isBlankWhenNull="true">
+                <reportElement x="285" y="0" width="40" height="12"/>
+                <textElement>
+                    <font size="7"/>
+                </textElement>
+                <textFieldExpression class="java.util.Date"><![CDATA[$F{SERVICE_FROM_DATE}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy HH.mm.ss" isBlankWhenNull="true">
+                <reportElement x="330" y="0" width="40" height="12"/>
+                <textElement>
+                    <font size="7"/>
+                </textElement>
+                <textFieldExpression class="java.util.Date"><![CDATA[$F{SERVICE_TO_DATE}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
+                <reportElement x="375" y="0" width="40" height="12"/>
+                <textElement textAlignment="Right">
+                    <font size="7"/>
+                </textElement>
+                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{RATE}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
+                <reportElement x="420" y="0" width="45" height="12"/>
+                <textElement textAlignment="Right">
+                    <font size="7"/>
+                </textElement>
+                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{AMOUNT}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
+                <reportElement x="470" y="0" width="35" height="12"/>
+                <textElement textAlignment="Right">
+                    <font size="7"/>
+                </textElement>
+                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{CGST}+$F{SGST}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
+                <reportElement x="510" y="0" width="50" height="12"/>
+                <textElement textAlignment="Right">
+                    <font size="7"/>
+                </textElement>
+                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{TOTAL_VAL}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+</jasperReport>

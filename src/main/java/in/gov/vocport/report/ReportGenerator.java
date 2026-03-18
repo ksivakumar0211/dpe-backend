@@ -1,294 +1,146 @@
-//package in.gov.vocport.report;
+package in.gov.vocport.report;
+
+
+import in.gov.vocport.exception.ReportGenerationException;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.util.JRLoader;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.stereotype.Service;
+
+import javax.sql.DataSource;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+
+@Service
+@RequiredArgsConstructor
+public class ReportGenerator {
+    private final DataSource primary;
+    private final ExportReport exportReport;
+    private static final Map<String, String> whiteList = Map.ofEntries(Map.entry("DCST_SIS_Issue_Main_PDF.jrxml", "DCST_SIS_Issue_PDF.jrxml"),
+            Map.entry("DCST_SIS_Req_Main_PDF.jrxml", "DCST_SIS_Req_PDF.jrxml"),
+            Map.entry("DCST_STN_Indent_Main_PDF.jrxml", "DCST_STN_Indent_PDF.jrxml"),
+            Map.entry("DCST_STN_Supply_Main_PDF.jrxml", "DCST_STN_Supply_PDF.jrxml"),
+            Map.entry("FSN_Analysis_TXT.jrxml", "FSN_Analysis_TXT_subreport.jrxml"),
+            Map.entry("ABC_Analysis_TXT.jrxml", "ABC_Analysis_Subreport.jrxml"),
+            Map.entry("DCST_IndentH_PDF.jrxml", "DCST_IndentH_PDF_subreport1.jrxml"),
+            Map.entry("DCST_IndentH_Hist_All_PDF.jrxml", "DCST_IndentH_Hist_All_PDF_subreport1.jrxml"),
+            Map.entry("DCIN_FAB_Date_Wise_Inv_PDF.jrxml","DCIN_FAB_Vend_Wise_Inv_PDF_subreport1.jrxml"),
+            Map.entry("ABC_Analysis_PDF.jrxml", "ABC_Analysis_Subreport_PDF.jrxml"),
+            Map.entry("FSN_Analysis_PDF.jrxml", "FSN_Analysis_PDF_subreport.jrxml"),
+            Map.entry("DCST_GST_Invoice_Main_PDF.jrxml", "DCST_GST_Invoice_PDF_subreport1.jrxml"),
+            Map.entry("DCIN_Water_SumDay_PDF.jrxml", "DCIN_Water_SumDay_PDF_subreport1.jrxml"));
+
+
+    public void generateGenericReport(String doc, String object, HttpServletResponse response, String fileName, String reportName) throws ReportGenerationException {
+        try (Connection connection = primary.getConnection()){
+            JSONObject jsonObject = new JSONObject(object);
+//            Connection connection = primary.getConnection();
+            //1. Create Required Parameters
+            Map<String, Object> parameters = new HashMap<>();
+            getAllParameter(parameters, jsonObject);
+
+            if (whiteList.containsKey(reportName)) {
+                // Get the subreport directory path using ClassLoader
+                ClassLoader classLoader = getClass().getClassLoader();
+                URL subReportUrl = classLoader.getResource("xsd/".concat(whiteList.get(reportName)));
+                if (subReportUrl == null) {
+                    throw new ReportGenerationException("Subreport file not found.");
+                }
+
+                // Convert URL to File
+                File subReportJrxmlFile = new File(subReportUrl.toURI());
+                String subReportJrxmlPath = subReportJrxmlFile.getAbsolutePath();
+
+                // Compile the subreport if necessary (from .jrxml to .jasper)
+                String subReportJasperPath = subReportJrxmlPath.replace(".jrxml", ".jasper");
+
+                // Check if the compiled .jasper file exists, otherwise compile it
+                File subJasperFile = new File(subReportJasperPath);
+                if (!subJasperFile.exists()) {
+                    JasperCompileManager.compileReportToFile(subReportJrxmlPath, subReportJasperPath);
+                }
+
+                // Set the subreport and other parameters
+                String subReportDir = subJasperFile.getParent();
+                parameters.put("SUBREPORT_DIR", subReportDir.concat("/"));
+                parameters.put("REPORT_CONNECTION", connection);
+            }
+            String newReportName = reportName.replace(".jrxml", ".jasper");
+//            String path = ResourceUtils.getFile("classpath:xsd/".concat(newReportName)).getAbsolutePath();
+            try (InputStream jasperInputStream = getClass().getResourceAsStream("/xsd/" + newReportName)) {
+//                InputStream jasperInputStream = getClass().getResourceAsStream("/xsd/" + newReportName);
+
+                if (jasperInputStream == null) {
+                    throw new FileNotFoundException("Jasper file not found in classpath at /xsd/" + reportName);
+                }
+
+                JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperInputStream);
+//            JasperReport jasperReport = JasperCompileManager.compileReport(path);
+
+//            if (!whiteList.containsKey(reportName)) {
+//                JRParameter[] jrParameters = jasperReport.getParameters();
+//                AtomicInteger count = new AtomicInteger(0);
+//                Arrays.stream(jrParameters).forEach(parameter -> {
+//                    if (!parameter.isSystemDefined()) count.updateAndGet(v -> v + 1);
+//                });
 //
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//import com.itextpdf.text.*;
-//import com.itextpdf.text.pdf.BaseFont;
-//import com.itextpdf.text.pdf.PdfPCell;
-//import com.itextpdf.text.pdf.PdfPTable;
-//import com.itextpdf.text.pdf.PdfWriter;
-//import in.gov.vocport.report.dto.LayoutColumn;
-//import in.gov.vocport.report.dto.LayoutField;
-//import in.gov.vocport.report.dto.LayoutSection;
-//import in.gov.vocport.report.dto.ReportLayout;
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.stereotype.Service;
-//
-//import java.io.ByteArrayOutputStream;
-//import java.io.IOException;
-//import java.io.InputStream;
-//import java.net.URL;
-//import java.util.*;
-//import java.util.List;
-//
-//@Service
-//@RequiredArgsConstructor
-//public class ReportGenerator {
-//    private final ObjectMapper objectMapper;
-//
-//    public byte[] generateReport(String reportName, Map<String,Object> filters) throws Exception {
-//        ReportLayout layout =
-//                load("reports_utility/JsonFile/"+ reportName + ".json");
-//
-//        Map<String,Object> header =
-//                fetchHeaderData(filters);
-//
-//        List<Map<String,Object>> rows =
-//                fetchReportData(filters);
-//
-//        return generate(layout, filters, header, rows);
-//    }
-//    public byte[] generate(ReportLayout layout,
-//                           Map<String,Object> parameters,
-//                           Map<String,Object> headerData,
-//                           List<Map<String,Object>> tableData) throws Exception {
-//
-//
-//
-//        ByteArrayOutputStream out = new ByteArrayOutputStream();
-//
-//        Document document = new Document(PageSize.A4);
-//        PdfWriter.getInstance(document,out);
-//
-//        document.open();
-//
-//        renderTitle(document, layout.getTitle());
-//
-//        renderFlowFields(document, layout.getParameters(), parameters);
-//
-//        renderFlowFields(document, layout.getHeaderFields(), headerData);
-//
-//        for(LayoutSection section : layout.getSections()){
-//
-//            renderTable(document, section, tableData);
-//
-//        }
-//
-//        document.close();
-//
-//        return out.toByteArray();
-//    }
-//
-//    private void renderTable(Document document, LayoutSection section, List<Map<String, Object>> data) throws DocumentException, IOException {
-//        List<LayoutColumn> columns = section.getColumns();
-//
-//        BaseFont font = BaseFont.createFont();
-//
-//        float fontSize = 10;
-//
-//        float[] widths = new float[columns.size()];
-//
-//        int i=0;
-//
-//        for(LayoutColumn column : columns){
-//
-//            widths[i++] = calculateColumnWidth(
-//                    font,fontSize,
-//                    column.getHeader(),
-//                    data,
-//                    column.getField());
-//        }
-//
-//        PdfPTable table = new PdfPTable(columns.size());
-//
-//        table.setTotalWidth(widths);
-//        table.setLockedWidth(true);
-//
-//        for(LayoutColumn column : columns){
-//
-//            PdfPCell header = new PdfPCell(new Phrase(column.getHeader()));
-//
-//            header.setBackgroundColor(BaseColor.LIGHT_GRAY);
-//
-//            header.setHorizontalAlignment(Element.ALIGN_CENTER);
-//
-//            table.addCell(header);
-//        }
-//
-//        for(Map<String,Object> row : data){
-//
-//            for(LayoutColumn column : columns){
-//
-//                Object val = row.get(column.getField());
-//
-//                PdfPCell cell =
-//                        new PdfPCell(new Phrase(val==null?"":val.toString()));
-//
-//                cell.setNoWrap(true);
-//
-//                cell.setHorizontalAlignment(resolveAlign(column.getAlign()));
-//
-//                table.addCell(cell);
+//                if (count.get() != parameters.size()) throw new ReportGenerationException("Fill All The Parameter");
 //            }
-//        }
-//
-//        document.add(table);
-//
-//    }
-//
-//    private void renderFlowFields(Document document, List<LayoutField> fields, Map<String, Object> data) throws DocumentException, IOException {
-//        if(fields == null) return;
-//
-//        BaseFont font = BaseFont.createFont();
-//
-//        float fontSize = 10;
-//
-//        float pageWidth =
-//                document.getPageSize().getWidth()
-//                        - document.leftMargin()
-//                        - document.rightMargin();
-//
-//        float currentWidth = 0;
-//
-//        PdfPTable row = new PdfPTable(1);
-//
-//        for(LayoutField field : fields){
-//
-//            Object value = data.get(field.getField());
-//
-//            String text = field.getLabel() + " : " +
-//                    (value==null ? "" : value.toString());
-//
-//            float textWidth = font.getWidthPoint(text,fontSize) + 30;
-//
-//            if(currentWidth + textWidth > pageWidth){
-//
-//                document.add(row);
-//
-//                row = new PdfPTable(1);
-//
-//                currentWidth = 0;
-//            }
-//
-//            PdfPCell cell = new PdfPCell(new Phrase(text));
-//
-//            cell.setBorder(Rectangle.NO_BORDER);
-//
-//            row.addCell(cell);
-//
-//            currentWidth += textWidth;
-//        }
-//
-//        document.add(row);
-//    }
-//
-//    private void renderTitle(Document document, String title) throws DocumentException {
-//        if(title == null) return;
-//
-//        Font font = new Font(Font.FontFamily.HELVETICA,16,Font.BOLD);
-//
-//        Paragraph p = new Paragraph(new Chunk(title, font));
-//
-//        p.setAlignment(Element.ALIGN_CENTER);
-//        p.setSpacingAfter(15);
-//
-//        document.add(p.getChunks().get(0));
-//    }
-//
-//    private float calculateColumnWidth(BaseFont font,
-//                                       float fontSize,
-//                                       String header,
-//                                       List<Map<String,Object>> data,
-//                                       String field){
-//
-//        float maxWidth = font.getWidthPoint(header,fontSize);
-//
-//        int counter = 0;
-//
-//        for(Map<String,Object> row : data){
-//
-//            Object val = row.get(field);
-//
-//            if(val!=null){
-//
-//                float width = font.getWidthPoint(val.toString(),fontSize);
-//
-//                if(width > maxWidth)
-//                    maxWidth = width;
-//            }
-//
-//            counter++;
-//
-//            if(counter>100) break;
-//        }
-//
-//        return maxWidth + 20;
-//    }
-//
-//    private int resolveAlign(String align){
-//
-//        if("RIGHT".equalsIgnoreCase(align))
-//            return Element.ALIGN_RIGHT;
-//
-//        if("CENTER".equalsIgnoreCase(align))
-//            return Element.ALIGN_CENTER;
-//
-//        return Element.ALIGN_LEFT;
-//    }
-//
-//    public Map<String,Object> fetchHeaderData(Map<String,Object> filters){
-//
-//        Map<String,Object> header = new LinkedHashMap<>();
-//
-//        header.put("agentName","ABC LOGISTICS");
-//        header.put("agentCode","AG101");
-//        header.put("zone","EAST");
-//
-//        return header;
-//    }
-//
-//    public List<Map<String,Object>> fetchReportData(Map<String,Object> filters){
-//
-//        List<Map<String,Object>> rows = new ArrayList<>();
-//
-//        Map<String,Object> r1 = new HashMap<>();
-//        r1.put("containerNo","CONT123");
-//        r1.put("slNo",1);
-//        r1.put("serviceType","STORAGE");
-//        r1.put("rate",500);
-//        r1.put("amount",1000);
-//
-//        rows.add(r1);
-//
-//        Map<String,Object> r2 = new HashMap<>();
-//        r2.put("containerNo","CONT123");
-//        r2.put("slNo",2);
-//        r2.put("serviceType","HANDLING");
-//        r2.put("rate",200);
-//        r2.put("amount",400);
-//
-//        rows.add(r2);
-//
-//        Map<String,Object> r3 = new HashMap<>();
-//        r3.put("containerNo","CONT456");
-//        r3.put("slNo",1);
-//        r3.put("serviceType","STORAGE");
-//        r3.put("rate",600);
-//        r3.put("amount",1200);
-//
-//        rows.add(r3);
-//
-//        Map<String,Object> r4 = new HashMap<>();
-//        r4.put("containerNo","CONT456");
-//        r4.put("slNo",2);
-//        r4.put("serviceType","LOADING");
-//        r4.put("rate",300);
-//        r4.put("amount",600);
-//
-//        rows.add(r4);
-//
-//        return rows;
-//    }
-//
-//    public ReportLayout load(String path) throws Exception {
-//
-//        ClassLoader classLoader = getClass().getClassLoader();
-//
-//        InputStream inputStream = classLoader.getResourceAsStream(path);
-//
-//        if (inputStream == null) {
-//            throw new RuntimeException("Report layout not found: " + path);
-//        }
-//
-//        return objectMapper.readValue(inputStream, ReportLayout.class);
-//    }
-//}
+
+                JRParameter[] jrParameters = jasperReport.getParameters();
+                List<String> reportParameters = new ArrayList<>();
+                AtomicInteger count = new AtomicInteger(0);
+                Arrays.stream(jrParameters).forEach(parameter -> {
+                    if (!parameter.isSystemDefined()) {
+                        reportParameters.add(parameter.getName());
+                        count.updateAndGet(v -> v + 1);
+                    }
+                });
+
+                if (count.get() < parameters.size() - 1) throw new ReportGenerationException("Fill All The Parameter");
+                if (!parameterChecker(parameters, reportParameters)) throw new ReportGenerationException("Report Parameters are wrong with the report template");
+
+                JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, connection);
+//                DataSourceUtils.releaseConnection(connection, primary);
+
+                exportReport.exportJasperReportBytes(jasperPrint, doc, response, fileName);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (JRException exception) {
+            throw new ReportGenerationException(exception.getMessage());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void getAllParameter(Map<String, Object> parameters, JSONObject jsonObject) throws JSONException {
+        JSONArray keys = jsonObject.names ();
+
+        for (int i = 0; i < keys.length (); i++) {
+            String key = keys.getString (i);
+            String value = jsonObject.getString (key);
+            parameters.put(key, value);
+        }
+    }
+
+    private boolean parameterChecker(Map<String, Object> parameters, List<String> reportParameters) {
+        return reportParameters.stream().allMatch(parameters::containsKey);
+    }
+}
