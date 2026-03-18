@@ -15,7 +15,7 @@ import java.util.Map;
 public class ReportController {
     private final ReportGenerator reportService;
 
-    @PostMapping("/jasper/{fileType}/{fileName}")
+    @PostMapping("/jasper/{fileType}/{moduleName}")
     public void generateReport(@PathVariable("fileType") String fileType, @PathVariable("moduleName")String moduleName, @RequestBody String object, HttpServletResponse response) throws IOException {
         try {
             response.reset(); // Clear any existing data in the response
