@@ -213,7 +213,7 @@ public class CommonSearchOptionRepository {
 		String base = """
 				FROM VS_MH_LOCMASTER loc
 				WHERE loc.del_flag = 'N'
-				  AND loc.location_cd in ('LOC/78', 'LOC/39', 'LOC/37', 'LOC/30')'
+				  AND loc.location_cd in ('LOC/78', 'LOC/39', 'LOC/37', 'LOC/30')
 				  AND loc.location_cd != ?
 				""";
 
