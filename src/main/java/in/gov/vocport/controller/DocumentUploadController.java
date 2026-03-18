@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -54,5 +55,12 @@ public class DocumentUploadController {
                 .header("Content-Disposition", "attachment; filename=" + fileName)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(file);
+    }
+
+    @GetMapping("/get-doc")
+    public ResponseEntity getDoc(@RequestParam String vesselsNo) {
+        Map<String, Object> result = new HashMap<>();
+        documentUploadService.getDoc(vesselsNo, result);
+        return result.containsKey("error") ? new ResponseEntity<>(result, HttpStatus.BAD_REQUEST) : new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

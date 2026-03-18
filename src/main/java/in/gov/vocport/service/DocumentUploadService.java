@@ -204,4 +204,10 @@ public class DocumentUploadService {
             result.put("success", ctThDocUploadRepository.save(savedCtThDocUpload));
         }
     }
+
+    public void getDoc(String vesselsNo, Map<String, Object> result) {
+        CtThDocUpload ctThDocUpload = ctThDocUploadRepository.findById(vesselsNo).orElse(null);
+        if (ctThDocUpload != null) result.put("success", ctThDocUpload);
+        else result.put("error", "No Document Details found");
+    }
 }
