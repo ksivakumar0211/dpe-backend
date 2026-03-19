@@ -202,7 +202,7 @@ public class CommonSearchOptionRepository {
 		@SuppressWarnings("deprecation")
 		List<VesselDto> content = jdbcTemplate.query(dataSql, params.toArray(),
 				(rs, rowNum) -> new VesselDto(rs.getString("VESSEL_NO"), rs.getString("VESSEL_NAME"),
-						rs.getString("VOYAGE_NUMBER")));
+						rs.getString("VOYAGE_NUMBER"), rs.getString("status_foreign_coastal")));
 
 		int totalPages = (int) Math.ceil((double) total / size);
 		return new PagedResponse<>(content, page, totalPages, total);
