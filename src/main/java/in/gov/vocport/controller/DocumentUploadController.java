@@ -48,6 +48,7 @@ public class DocumentUploadController {
         return result.containsKey("error") ? new ResponseEntity<>(result, HttpStatus.BAD_REQUEST) : new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+
     @GetMapping("/download")
     public ResponseEntity downloadFile(@RequestParam String fileName) throws IOException {
         byte[] file = documentUploadService.downloadableFiles(fileName);

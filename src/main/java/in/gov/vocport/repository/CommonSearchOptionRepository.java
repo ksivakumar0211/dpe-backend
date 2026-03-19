@@ -185,9 +185,10 @@ public class CommonSearchOptionRepository {
             SELECT v.VESSEL_NO,
                    v.VESSEL_NAME,
                    v.VOYAGE_NUMBER,
+                   v.STATUS_FOREIGN_COASTAL
                    ROWNUM rnum
             FROM (
-                SELECT v.VESSEL_NO, v.VESSEL_NAME, v.VOYAGE_NUMBER
+                SELECT v.VESSEL_NO, v.VESSEL_NAME, v.VOYAGE_NUMBER, v.STATUS_FOREIGN_COASTAL
                 """ + base + """
                 ORDER BY v.VESSEL_NAME ASC
             ) v
