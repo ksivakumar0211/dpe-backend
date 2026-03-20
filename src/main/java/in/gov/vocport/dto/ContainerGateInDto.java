@@ -61,7 +61,6 @@ public class ContainerGateInDto {
 	
 	private String linerName;
 
-	@NotBlank(message = "EIR is required")
 	private String eir;
 
 	private String icdCfsFcs; // C/I/F/N
