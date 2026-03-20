@@ -1,22 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DPE_Bill_PDF" language="groovy" pageWidth="600" pageHeight="842" columnWidth="560" leftMargin="20" rightMargin="20" topMargin="5" bottomMargin="5">
-    <parameter name="containerNo" class="java.lang.String"/>
     <parameter name="p2prequestiD" class="java.lang.String"/>
     <queryString>
         <![CDATA[select container_no,gate_in_date_time,admission_chit_no,agent_customer_name,
 boe_no,ten_delivery_date,act_delivery_date,cfs_no,cfs_date,
 service_type_cd,service_name,service_from_date,service_to_date,
-rate,amount,cgst,sgst,total_val,payment_no,payment_date,
+rate,amount,cgst,sgst,tds_amt,total_val,payment_no,payment_date,
 service_remarks,sap_ref_no,p2prequestid,status,max_gate_in_time,
 ref_tran_no,agent_cd,
-case when $P{containerNo} is null then
-sum_total_pay_word
-else
-sum_total_cont_word
-end value_in_word
+sum_total_pay_word as value_in_word
 from dpe_bill_as_payment_vw
-where container_no = nvl($P{containerNo},container_no)
-and P2PREQUESTID = nvl($P{p2prequestiD},P2PREQUESTID)]]>
+where P2PREQUESTID = nvl($P{p2prequestiD},P2PREQUESTID)]]>
     </queryString>
     <field name="CONTAINER_NO" class="java.lang.String">
         <fieldDescription><![CDATA[]]></fieldDescription>
@@ -69,6 +63,9 @@ and P2PREQUESTID = nvl($P{p2prequestiD},P2PREQUESTID)]]>
     <field name="SGST" class="java.math.BigDecimal">
         <fieldDescription><![CDATA[]]></fieldDescription>
     </field>
+    <field name="TDS_AMT" class="java.math.BigDecimal">
+        <fieldDescription><![CDATA[]]></fieldDescription>
+    </field>
     <field name="TOTAL_VAL" class="java.math.BigDecimal">
         <fieldDescription><![CDATA[]]></fieldDescription>
     </field>
@@ -110,6 +107,9 @@ and P2PREQUESTID = nvl($P{p2prequestiD},P2PREQUESTID)]]>
     </variable>
     <variable name="sumAmount" class="java.math.BigDecimal" calculation="Sum">
         <variableExpression><![CDATA[$F{AMOUNT}]]></variableExpression>
+    </variable>
+    <variable name="sumTds" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{TDS_AMT}]]></variableExpression>
     </variable>
     <group name="container" isStartNewPage="true">
         <groupExpression><![CDATA[$F{CONTAINER_NO}]]></groupExpression>
@@ -158,7 +158,7 @@ and P2PREQUESTID = nvl($P{p2prequestiD},P2PREQUESTID)]]>
                     <text><![CDATA[CFS Date]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement x="285" y="92" width="40" height="24"/>
+                    <reportElement x="245" y="92" width="40" height="24"/>
                     <textElement textAlignment="Center">
                         <font size="7" isBold="true"/>
                     </textElement>
@@ -166,14 +166,14 @@ and P2PREQUESTID = nvl($P{p2prequestiD},P2PREQUESTID)]]>
 From Dt]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement stretchType="RelativeToBandHeight" x="375" y="92" width="40" height="24"/>
+                    <reportElement stretchType="RelativeToBandHeight" x="335" y="92" width="40" height="24"/>
                     <textElement textAlignment="Right">
                         <font size="7" isBold="true"/>
                     </textElement>
                     <text><![CDATA[Rate]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement x="115" y="92" width="165" height="24"/>
+                    <reportElement x="115" y="92" width="130" height="24"/>
                     <textElement>
                         <font size="7" isBold="true"/>
                     </textElement>
@@ -187,7 +187,7 @@ From Dt]]></text>
                     <text><![CDATA[Total]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement x="420" y="92" width="45" height="24"/>
+                    <reportElement x="380" y="92" width="45" height="24"/>
                     <textElement textAlignment="Right">
                         <font size="7" isBold="true"/>
                     </textElement>
@@ -234,7 +234,7 @@ From Dt]]></text>
                     <text><![CDATA[Agent Name:]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement x="330" y="92" width="40" height="24"/>
+                    <reportElement x="290" y="92" width="40" height="24"/>
                     <textElement textAlignment="Center">
                         <font size="7" isBold="true"/>
                     </textElement>
@@ -242,7 +242,7 @@ From Dt]]></text>
 To Date]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement x="470" y="92" width="35" height="24"/>
+                    <reportElement x="430" y="92" width="35" height="24"/>
                     <textElement textAlignment="Right">
                         <font size="7" isBold="true"/>
                     </textElement>
@@ -262,6 +262,13 @@ To Date]]></text>
                     </textElement>
                     <textFieldExpression class="java.lang.String"><![CDATA[$F{AGENT_CD}]]></textFieldExpression>
                 </textField>
+                <staticText>
+                    <reportElement x="470" y="92" width="35" height="24"/>
+                    <textElement textAlignment="Right">
+                        <font size="7" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[TDS]]></text>
+                </staticText>
             </band>
         </groupHeader>
         <groupFooter>
@@ -274,14 +281,14 @@ To Date]]></text>
                     <textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumTotal}]]></textFieldExpression>
                 </textField>
                 <textField pattern="###0.00" isBlankWhenNull="true">
-                    <reportElement x="470" y="0" width="35" height="12"/>
+                    <reportElement x="430" y="0" width="35" height="12"/>
                     <textElement textAlignment="Right">
                         <font size="8" isBold="true"/>
                     </textElement>
                     <textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sum_gst}]]></textFieldExpression>
                 </textField>
                 <textField pattern="###0.00" isBlankWhenNull="true">
-                    <reportElement x="420" y="0" width="45" height="12"/>
+                    <reportElement x="380" y="0" width="45" height="12"/>
                     <textElement textAlignment="Right">
                         <font size="8" isBold="true"/>
                     </textElement>
@@ -328,6 +335,13 @@ To Date]]></text>
                     </textElement>
                     <text><![CDATA[Signature (ATM/Supervisor )]]></text>
                 </staticText>
+                <textField pattern="###0.00" isBlankWhenNull="true">
+                    <reportElement x="470" y="0" width="35" height="12"/>
+                    <textElement textAlignment="Right">
+                        <font size="8" isBold="true"/>
+                    </textElement>
+                    <textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumTds}]]></textFieldExpression>
+                </textField>
             </band>
         </groupFooter>
     </group>
@@ -389,7 +403,7 @@ Phone : 0461 - 2372133                              Fax : 0461 - 2352104
                 <textFieldExpression class="java.util.Date"><![CDATA[$F{CFS_DATE}]]></textFieldExpression>
             </textField>
             <textField isStretchWithOverflow="true" isBlankWhenNull="true">
-                <reportElement x="115" y="0" width="165" height="12"/>
+                <reportElement x="115" y="0" width="130" height="12"/>
                 <textElement>
                     <font size="7"/>
                 </textElement>
@@ -402,35 +416,35 @@ Phone : 0461 - 2372133                              Fax : 0461 - 2352104
                 </graphicElement>
             </line>
             <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy HH.mm.ss" isBlankWhenNull="true">
-                <reportElement x="285" y="0" width="40" height="12"/>
+                <reportElement x="245" y="0" width="40" height="12"/>
                 <textElement>
                     <font size="7"/>
                 </textElement>
                 <textFieldExpression class="java.util.Date"><![CDATA[$F{SERVICE_FROM_DATE}]]></textFieldExpression>
             </textField>
             <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy HH.mm.ss" isBlankWhenNull="true">
-                <reportElement x="330" y="0" width="40" height="12"/>
+                <reportElement x="290" y="0" width="40" height="12"/>
                 <textElement>
                     <font size="7"/>
                 </textElement>
                 <textFieldExpression class="java.util.Date"><![CDATA[$F{SERVICE_TO_DATE}]]></textFieldExpression>
             </textField>
             <textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
-                <reportElement x="375" y="0" width="40" height="12"/>
+                <reportElement x="335" y="0" width="40" height="12"/>
                 <textElement textAlignment="Right">
                     <font size="7"/>
                 </textElement>
                 <textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{RATE}]]></textFieldExpression>
             </textField>
             <textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
-                <reportElement x="420" y="0" width="45" height="12"/>
+                <reportElement x="380" y="0" width="45" height="12"/>
                 <textElement textAlignment="Right">
                     <font size="7"/>
                 </textElement>
                 <textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{AMOUNT}]]></textFieldExpression>
             </textField>
             <textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
-                <reportElement x="470" y="0" width="35" height="12"/>
+                <reportElement x="430" y="0" width="35" height="12"/>
                 <textElement textAlignment="Right">
                     <font size="7"/>
                 </textElement>
@@ -442,6 +456,13 @@ Phone : 0461 - 2372133                              Fax : 0461 - 2352104
                     <font size="7"/>
                 </textElement>
                 <textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{TOTAL_VAL}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
+                <reportElement x="470" y="0" width="35" height="12"/>
+                <textElement textAlignment="Right">
+                    <font size="7"/>
+                </textElement>
+                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{TDS_AMT}]]></textFieldExpression>
             </textField>
         </band>
     </detail>

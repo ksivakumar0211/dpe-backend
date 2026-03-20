@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -22,8 +23,8 @@ public class CtThDirectServiceChg {
     private String containerNo;
 
     @Column(name = "GATE_IN_DATE_TIME")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    private LocalDate gateInDateTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime gateInDateTime;
 
     @Column(name = "PARTY_CD", length = 10)
     private String partyCd;
