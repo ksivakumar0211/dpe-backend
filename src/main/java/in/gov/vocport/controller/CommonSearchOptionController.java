@@ -136,10 +136,7 @@ public class CommonSearchOptionController {
     public ResponseEntity<ContainerInPortDto> getContainerInPortDetails(
             @RequestParam String containerNo) {
         ContainerInPortDto dto = addEditServiceCharge.getContainerInPortDetails(containerNo);
-        if (dto == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ofNullable(dto);
     }
 
 

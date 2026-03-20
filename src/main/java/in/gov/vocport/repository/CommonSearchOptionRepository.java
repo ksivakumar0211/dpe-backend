@@ -775,7 +775,7 @@ public class CommonSearchOptionRepository {
 			dto.setContainerNo(rs.getString("CONTAINER_NO"));
 			dto.setChitNo(rs.getString("ADMISSION_CHIT_NO"));
 			dto.setGateInDateTime(rs.getTimestamp("ADMISSION_TIME") != null
-					? new SimpleDateFormat("dd-MMM-yyyy").format(rs.getTimestamp("ADMISSION_TIME"))
+					? new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(rs.getTimestamp("ADMISSION_TIME"))
 					: null);
 			dto.setAgentCode(rs.getString("PARTY_CD"));
 			dto.setAgentName(rs.getString("CH_AGENT_NAME"));
