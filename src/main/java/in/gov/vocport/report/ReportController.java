@@ -15,8 +15,8 @@ import java.util.Map;
 public class ReportController {
     private final ReportGenerator reportService;
 
-    @PostMapping("/jasper/{fileType}/{moduleName}")
-    public void generateReport(@PathVariable("fileType") String fileType, @PathVariable("moduleName")String moduleName, @RequestBody String object, HttpServletResponse response) throws IOException {
+    @PostMapping("/jasper/{fileType}/{reportName}")
+    public void generateReport(@PathVariable("fileType") String fileType, @PathVariable("reportName")String reportName, @RequestBody String object, HttpServletResponse response) throws IOException {
         try {
             response.reset(); // Clear any existing data in the response
             // Reapply CORS headers after resetting the response
@@ -25,7 +25,7 @@ public class ReportController {
             response.setHeader("Access-Control-Allow-Headers", "*");
 
             String fileName = "Report" + "_" + LocalDateTime.now();
-            reportService.generateGenericReport(fileType, object, response, fileName, moduleName);
+            reportService.generateGenericReport(fileType, object, response, fileName, reportName);
         } catch (Exception exception) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().write(exception.getMessage());

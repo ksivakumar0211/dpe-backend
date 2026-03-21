@@ -28,28 +28,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ReportGenerator {
     private final DataSource primary;
     private final ExportReport exportReport;
-    private static final Map<String, String> whiteList = Map.ofEntries(Map.entry("DCST_SIS_Issue_Main_PDF.jrxml", "DCST_SIS_Issue_PDF.jrxml"),
-            Map.entry("DCST_SIS_Req_Main_PDF.jrxml", "DCST_SIS_Req_PDF.jrxml"),
-            Map.entry("DCST_STN_Indent_Main_PDF.jrxml", "DCST_STN_Indent_PDF.jrxml"),
-            Map.entry("DCST_STN_Supply_Main_PDF.jrxml", "DCST_STN_Supply_PDF.jrxml"),
-            Map.entry("FSN_Analysis_TXT.jrxml", "FSN_Analysis_TXT_subreport.jrxml"),
-            Map.entry("ABC_Analysis_TXT.jrxml", "ABC_Analysis_Subreport.jrxml"),
-            Map.entry("DCST_IndentH_PDF.jrxml", "DCST_IndentH_PDF_subreport1.jrxml"),
-            Map.entry("DCST_IndentH_Hist_All_PDF.jrxml", "DCST_IndentH_Hist_All_PDF_subreport1.jrxml"),
-            Map.entry("DCIN_FAB_Date_Wise_Inv_PDF.jrxml","DCIN_FAB_Vend_Wise_Inv_PDF_subreport1.jrxml"),
-            Map.entry("ABC_Analysis_PDF.jrxml", "ABC_Analysis_Subreport_PDF.jrxml"),
-            Map.entry("FSN_Analysis_PDF.jrxml", "FSN_Analysis_PDF_subreport.jrxml"),
-            Map.entry("DCST_GST_Invoice_Main_PDF.jrxml", "DCST_GST_Invoice_PDF_subreport1.jrxml"),
-            Map.entry("DCIN_Water_SumDay_PDF.jrxml", "DCIN_Water_SumDay_PDF_subreport1.jrxml"));
+    private static final Map<String, String> whiteList = Map.ofEntries(Map.entry("sample", "sample"));
 
 
-    private static final Map<String, String> moduleNameWithReportName = Map.ofEntries(Map.entry("Direct Port Entry Service Charges-Add", "DPE_Bill_PDF.jrxml"));
-    public void generateGenericReport(String doc, String object, HttpServletResponse response, String fileName, String moduleName) throws ReportGenerationException {
-        String reportName = moduleNameWithReportName.get(moduleName);
+//    private static final Map<String, String> moduleNameWithReportName = Map.ofEntries(Map.entry("Direct Port Entry Service Charges-Add", "DPE_Bill_PDF.jrxml"));
+    public void generateGenericReport(String doc, String object, HttpServletResponse response, String fileName, String reportName) throws ReportGenerationException {
+//        String reportName = moduleNameWithReportName.get(moduleName);
 
         try (Connection connection = primary.getConnection()){
             JSONObject jsonObject = new JSONObject(object);
-//            Connection connection = primary.getConnection();
             //1. Create Required Parameters
             Map<String, Object> parameters = new HashMap<>();
             getAllParameter(parameters, jsonObject);
