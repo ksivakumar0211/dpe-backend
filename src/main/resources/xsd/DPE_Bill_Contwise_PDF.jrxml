@@ -350,7 +350,7 @@ Phone : 0461 - 2372133                              Fax : 0461 - 2352104
             </staticText>
             <image>
                 <reportElement x="0" y="2" width="560" height="92"/>
-                <imageExpression class="java.lang.String"><![CDATA[getClass().getResource("/photo/login_header.bmp").getPath()]]></imageExpression>
+                <imageExpression class="java.lang.String"><![CDATA[getClass().getResourceAsStream("/photo/login_header.bmp")]]></imageExpression>
             </image>
             <staticText>
                 <reportElement x="0" y="157" width="80" height="12"/>
