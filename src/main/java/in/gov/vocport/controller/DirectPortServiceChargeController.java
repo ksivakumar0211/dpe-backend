@@ -29,6 +29,13 @@ public class DirectPortServiceChargeController {
         service.searchServiceCharge(chitNo, containerNo, result);
         return result.containsKey("error") ? new ResponseEntity<>(result, HttpStatus.BAD_REQUEST) : ResponseEntity.ok(result);
     }
+//
+//    @GetMapping("/getAllContainerForEditScreen")
+//    public ResponseEntity getServiceChargeContainer() {
+//        Map<String, Object> result = new HashMap<>();
+//        service.getServiceChargeContainer(result);
+//        return result.containsKey("error") ? new ResponseEntity<>(result, HttpStatus.BAD_REQUEST) : ResponseEntity.ok(result);
+//    }
 
     @GetMapping("/pay-status-check")
     public ResponseEntity payStatusCheck(@RequestParam String cfsNo) {

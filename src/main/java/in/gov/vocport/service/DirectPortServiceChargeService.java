@@ -130,7 +130,7 @@ public class DirectPortServiceChargeService {
 
     public void searchServiceCharge(String chitNo, String containerNo, Map<String, Object> result) {
         CtThDirectServiceChg ctThDirectServiceChg = headerRepository.findByChitNoAndContainerNo(chitNo, containerNo);
-        if (ctThDirectServiceChg.getServiceDetails() != null) {
+        if (ctThDirectServiceChg != null && ctThDirectServiceChg.getServiceDetails() != null) {
             ctThDirectServiceChg.getServiceDetails().forEach(dtls -> {
                 dtls.setPaymentNo(headerRepository.findPaymentNo(dtls.getCfsNo()));
                 dtls.setPaymentDate(headerRepository.findPaymentDate(dtls.getCfsNo()));
