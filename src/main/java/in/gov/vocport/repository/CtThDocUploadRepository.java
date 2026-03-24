@@ -1,6 +1,7 @@
 package in.gov.vocport.repository;
 
 import in.gov.vocport.dto.AgentProjection;
+import in.gov.vocport.dto.DocumentTypeProjection;
 import in.gov.vocport.dto.VesselsInfoDto;
 import in.gov.vocport.entities.CtThDocUpload;
 import org.springframework.data.domain.Page;
@@ -32,4 +33,14 @@ public interface CtThDocUploadRepository extends JpaRepository<CtThDocUpload, St
     """,
             nativeQuery = true)
     Page<AgentProjection> findAgentsWithPagination(@Param("search") String search, Pageable pageable);
+
+
+    @Query(value = """
+    SELECT 
+        d.doc_id AS docId,
+        d.document_type AS documentType
+    FROM PO_UPLOAD_DOC_TYPE d
+    """,
+            nativeQuery = true)
+    List<DocumentTypeProjection> findDocumentType();
 }

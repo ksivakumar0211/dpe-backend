@@ -65,10 +65,18 @@ public class DocumentUploadController {
         return result.containsKey("error") ? new ResponseEntity<>(result, HttpStatus.BAD_REQUEST) : new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+
     @GetMapping("/get-agents")
     public ResponseEntity getAgentList(@RequestParam(required = false) String search, @RequestParam int pageNo, @RequestParam int pageSize) {
         Map<String, Object> result = new HashMap<>();
         documentUploadService.getAgentList(search, pageNo, pageSize, result);
+        return result.containsKey("error") ? new ResponseEntity<>(result, HttpStatus.BAD_REQUEST) : new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/get-document-type")
+    public ResponseEntity getDocumentType() {
+        Map<String, Object> result = new HashMap<>();
+        documentUploadService.getDocumentType(result);
         return result.containsKey("error") ? new ResponseEntity<>(result, HttpStatus.BAD_REQUEST) : new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

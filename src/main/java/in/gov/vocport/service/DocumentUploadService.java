@@ -11,10 +11,7 @@ import com.hierynomus.smbj.session.Session;
 import com.hierynomus.smbj.share.DiskShare;
 import com.hierynomus.smbj.share.File;
 import in.gov.vocport.config.SmbProperties;
-import in.gov.vocport.dto.AgentProjection;
-import in.gov.vocport.dto.CtThDocUploadRequestDto;
-import in.gov.vocport.dto.PagedResponse;
-import in.gov.vocport.dto.VesselsInfoDto;
+import in.gov.vocport.dto.*;
 import in.gov.vocport.entities.CtTdDocUpload;
 import in.gov.vocport.entities.CtThDocUpload;
 import in.gov.vocport.repository.CommonSearchOptionRepository;
@@ -225,5 +222,11 @@ public class DocumentUploadService {
         search = StringUtils.isBlank(search) ? null : search.toUpperCase();
         Page<AgentProjection> agentList = ctThDocUploadRepository.findAgentsWithPagination(search, pageable);
         result.put("success", agentList);
+    }
+
+
+    public void getDocumentType(Map<String, Object> result) {
+        List<DocumentTypeProjection> documentTypes = ctThDocUploadRepository.findDocumentType();
+        result.put("success", documentTypes);
     }
 }
