@@ -143,15 +143,15 @@ public class DocumentUploadService {
                 ctTdDocUpload.setCreatedBy(userId);
                 ctTdDocUpload.setCreatedOn(currentTime);
                 ctTdDocUpload.setDccUploadPath(properties.getPath());
-                Map<String, Object> resp = new HashMap<>();
-                try {
-                    uploadFile(file, resp);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                if (resp.containsKey("error")) throw new RuntimeException("Unable to save the document");
-                ctTdDocUpload.setDccFileName((String) resp.get("fileName"));
-                ctTdDocUpload.setDccDownLink((String) resp.get("fileName"));
+//                Map<String, Object> resp = new HashMap<>();
+//                try {
+//                    uploadFile(file, resp);
+//                } catch (IOException e) {
+//                    throw new RuntimeException(e);
+//                }
+//                if (resp.containsKey("error")) throw new RuntimeException("Unable to save the document");
+//                ctTdDocUpload.setDccFileName((String) resp.get("fileName"));
+//                ctTdDocUpload.setDccDownLink((String) resp.get("fileName"));
                 ctTdDocUpload.setVesselNo(ctThDocUpload.getVesselNo());
                 ctTdDocUpload.setSrlNo(srlNo.get());
                 srlNo.updateAndGet(v -> v + 1);
@@ -172,15 +172,15 @@ public class DocumentUploadService {
                     ctTdDocUpload.setCreatedBy(userId);
                     ctTdDocUpload.setCreatedOn(LocalDate.now());
                     ctTdDocUpload.setDccUploadPath(properties.getPath());
-                    Map<String, Object> resp = new HashMap<>();
-                    try {
-                        uploadFile(file, resp);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    if (resp.containsKey("error")) throw new RuntimeException("Unable to save the document");
-                    ctTdDocUpload.setDccFileName((String) resp.get("fileName"));
-                    ctTdDocUpload.setDccDownLink((String) resp.get("fileName"));
+//                    Map<String, Object> resp = new HashMap<>();
+//                    try {
+//                        uploadFile(file, resp);
+//                    } catch (IOException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                    if (resp.containsKey("error")) throw new RuntimeException("Unable to save the document");
+//                    ctTdDocUpload.setDccFileName((String) resp.get("fileName"));
+//                    ctTdDocUpload.setDccDownLink((String) resp.get("fileName"));
                     ctTdDocUpload.setVesselNo(savedCtThDocUpload.getVesselNo());
                     ctTdDocUpload.setSrlNo(srlNo.get());
                     srlNo.updateAndGet(v -> v + 1);
@@ -218,7 +218,7 @@ public class DocumentUploadService {
 //        }
         List<CtTdDocUpload> filtedList = ctThDocUpload != null ? ctThDocUpload.getDocuments()
                 .stream()
-                .filter(doc -> (StringUtils.isBlank(agentCode) || doc.getAgentCustomerId().equals(agentCode)) && doc.getCancelFlag().equalsIgnoreCase("N"))
+                .filter(doc -> (StringUtils.isBlank(agentCode) || doc.getAgentCustomerId().equals(agentCode)) && (StringUtils.isBlank(doc.getCancelFlag()) || doc.getCancelFlag().equalsIgnoreCase("N")))
                 .toList() : null;
 
         if (filtedList == null || filtedList.isEmpty()) result.put("error", "No Document Added Yet");
