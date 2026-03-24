@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -863,6 +864,88 @@ public class CommonSearchOptionRepository {
 		int totalPages = (int) Math.ceil((double) total / size);
 
 		// Final response
+		return new PagedResponse<>(content, page, totalPages, total);
+	}
+
+	public PagedResponse<AgentProjection> findAgentsWithPagination(String search, int page, int size) {
+		String base = """
+    FROM PO_MH_AGENT a
+    WHERE 1=1
+""";
+
+		List<Object> filterParams = new ArrayList<>();
+
+		// ✅ Dynamic search filter
+		if (search != null && !search.isBlank()) {
+			base += """
+        AND (
+            UPPER(a.party_cd) LIKE UPPER(?) 
+            OR UPPER(a.agent_nm) LIKE UPPER(?)
+        )
+    """;
+
+			String likeSearch = "%" + search.trim() + "%";
+			filterParams.add(likeSearch);
+			filterParams.add(likeSearch);
+		}
+
+		// ✅ Count query
+		String countSql = "SELECT COUNT(*) " + base;
+
+		long total = jdbcTemplate.queryForObject(
+				countSql,
+				filterParams.toArray(),
+				Long.class
+		);
+
+		// ✅ Pagination calculation
+		int offset = page * size;
+		int upperBound = offset + size;
+
+		// ✅ Data query (Oracle 11g pagination)
+		String dataSql = """
+    SELECT partyCd,
+           agentNm
+    FROM (
+        SELECT a.*, ROWNUM rnum
+        FROM (
+            SELECT 
+                a.party_cd AS partyCd,
+                a.agent_nm AS agentNm
+            """ + base + """
+            ORDER BY a.party_cd
+        ) a
+        WHERE ROWNUM <= ?
+    )
+    WHERE rnum > ?
+""";
+
+		// ✅ Data params (IMPORTANT: separate list)
+		List<Object> dataParams = new ArrayList<>(filterParams);
+		dataParams.add(upperBound);
+		dataParams.add(offset);
+
+		// ✅ Execute query
+		List<AgentProjection> content = jdbcTemplate.query(
+				dataSql,
+				dataParams.toArray(),
+				(rs, rowNum) -> new AgentProjection() {
+					@Override
+					public String getPartyCd() throws SQLException {
+						return rs.getString("partyCd");
+					}
+
+					@Override
+					public String getAgentNm() throws SQLException {
+						return rs.getString("agentNm");
+					}
+				}
+		);
+
+		// ✅ Total pages
+		int totalPages = (int) Math.ceil((double) total / size);
+
+		// ✅ Final response
 		return new PagedResponse<>(content, page, totalPages, total);
 	}
 }

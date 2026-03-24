@@ -13,26 +13,58 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface CtThDocUploadRepository extends JpaRepository<CtThDocUpload, String> {
-    @Query(value = """
-    SELECT 
-        a.party_cd AS partyCd,
-        a.agent_nm AS agentNm
-    FROM PO_MH_AGENT a
-    WHERE (:search IS NULL 
-           OR :search = '' 
-           OR UPPER(a.party_cd) LIKE '%' || UPPER(:search) || '%'
-           OR UPPER(a.agent_nm) LIKE '%' || UPPER(:search) || '%')
-    """,
-            countQuery = """
-    SELECT COUNT(*)
-    FROM PO_MH_AGENT a
-    WHERE (:search IS NULL 
-           OR :search = '' 
-           OR UPPER(a.party_cd) LIKE '%' || UPPER(:search) || '%'
-           OR UPPER(a.agent_nm) LIKE '%' || UPPER(:search) || '%')
-    """,
-            nativeQuery = true)
-    Page<AgentProjection> findAgentsWithPagination(@Param("search") String search, Pageable pageable);
+//    @Query(value = """
+//    SELECT
+//        a.party_cd AS partyCd,
+//        a.agent_nm AS agentNm
+//    FROM PO_MH_AGENT a
+//    WHERE (:search IS NULL
+//           OR :search = ''
+//           OR UPPER(a.party_cd) LIKE '%' || UPPER(:search) || '%'
+//           OR UPPER(a.agent_nm) LIKE '%' || UPPER(:search) || '%')
+//    """,
+//            countQuery = """
+//    SELECT COUNT(*)
+//    FROM PO_MH_AGENT a
+//    WHERE (:search IS NULL
+//           OR :search = ''
+//           OR UPPER(a.party_cd) LIKE '%' || UPPER(:search) || '%'
+//           OR UPPER(a.agent_nm) LIKE '%' || UPPER(:search) || '%')
+//    """,
+//            nativeQuery = true)
+//    Page<AgentProjection> findAgentsWithPagination(@Param("search") String search, Pageable pageable);
+
+//    @Query(value = """
+//    SELECT * FROM (
+//        SELECT inner_query.*, ROWNUM rnum FROM (
+//            SELECT
+//                a.party_cd AS partyCd,
+//                a.agent_nm AS agentNm
+//            FROM PO_MH_AGENT a
+//            WHERE (:search IS NULL
+//                   OR :search = ''
+//                   OR UPPER(a.party_cd) LIKE '%' || UPPER(:search) || '%'
+//                   OR UPPER(a.agent_nm) LIKE '%' || UPPER(:search) || '%')
+//            ORDER BY a.party_cd
+//        ) inner_query
+//        WHERE ROWNUM <= :end
+//    )
+//    WHERE rnum > :start
+//    """,
+//            countQuery = """
+//        SELECT COUNT(*)
+//        FROM PO_MH_AGENT a
+//        WHERE (:search IS NULL
+//               OR :search = ''
+//               OR UPPER(a.party_cd) LIKE '%' || UPPER(:search) || '%'
+//               OR UPPER(a.agent_nm) LIKE '%' || UPPER(:search) || '%')
+//    """,
+//            nativeQuery = true)
+//    List<AgentProjection> findAgentsWithPagination(
+//            @Param("search") String search,
+//            @Param("start") int start,
+//            @Param("end") int end
+//    );
 
 
     @Query(value = """

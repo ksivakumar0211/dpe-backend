@@ -21,6 +21,7 @@ import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -143,15 +144,15 @@ public class DocumentUploadService {
                 ctTdDocUpload.setCreatedBy(userId);
                 ctTdDocUpload.setCreatedOn(currentTime);
                 ctTdDocUpload.setDccUploadPath(properties.getPath());
-                Map<String, Object> resp = new HashMap<>();
-                try {
-                    uploadFile(file, resp);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                if (resp.containsKey("error")) throw new RuntimeException("Unable to save the document");
-                ctTdDocUpload.setDccFileName((String) resp.get("fileName"));
-                ctTdDocUpload.setDccDownLink((String) resp.get("fileName"));
+//                Map<String, Object> resp = new HashMap<>();
+//                try {
+//                    uploadFile(file, resp);
+//                } catch (IOException e) {
+//                    throw new RuntimeException(e);
+//                }
+//                if (resp.containsKey("error")) throw new RuntimeException("Unable to save the document");
+//                ctTdDocUpload.setDccFileName((String) resp.get("fileName"));
+//                ctTdDocUpload.setDccDownLink((String) resp.get("fileName"));
                 ctTdDocUpload.setVesselNo(ctThDocUpload.getVesselNo());
                 ctTdDocUpload.setSrlNo(srlNo.get());
                 srlNo.updateAndGet(v -> v + 1);
@@ -172,15 +173,15 @@ public class DocumentUploadService {
                     ctTdDocUpload.setCreatedBy(userId);
                     ctTdDocUpload.setCreatedOn(LocalDate.now());
                     ctTdDocUpload.setDccUploadPath(properties.getPath());
-                    Map<String, Object> resp = new HashMap<>();
-                    try {
-                        uploadFile(file, resp);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    if (resp.containsKey("error")) throw new RuntimeException("Unable to save the document");
-                    ctTdDocUpload.setDccFileName((String) resp.get("fileName"));
-                    ctTdDocUpload.setDccDownLink((String) resp.get("fileName"));
+//                    Map<String, Object> resp = new HashMap<>();
+//                    try {
+//                        uploadFile(file, resp);
+//                    } catch (IOException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                    if (resp.containsKey("error")) throw new RuntimeException("Unable to save the document");
+//                    ctTdDocUpload.setDccFileName((String) resp.get("fileName"));
+//                    ctTdDocUpload.setDccDownLink((String) resp.get("fileName"));
                     ctTdDocUpload.setVesselNo(savedCtThDocUpload.getVesselNo());
                     ctTdDocUpload.setSrlNo(srlNo.get());
                     srlNo.updateAndGet(v -> v + 1);
@@ -231,7 +232,7 @@ public class DocumentUploadService {
     public void getAgentList(String search, int pageNo, int pageSize, Map<String, Object> result) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         search = StringUtils.isBlank(search) ? null : search.toUpperCase();
-        Page<AgentProjection> agentList = ctThDocUploadRepository.findAgentsWithPagination(search, pageable);
+        PagedResponse<AgentProjection> agentList = commonSearchOptionRepository.findAgentsWithPagination(search, pageNo, pageSize);
         result.put("success", agentList);
     }
 
