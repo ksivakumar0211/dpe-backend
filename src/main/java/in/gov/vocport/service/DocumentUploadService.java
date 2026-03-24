@@ -185,19 +185,26 @@ public class DocumentUploadService {
                     ctTdDocUpload.setSrlNo(srlNo.get());
                     srlNo.updateAndGet(v -> v + 1);
                     savedCtThDocUpload.getDocuments().add(ctTdDocUpload);
-                } else if (StringUtils.isNotBlank(dto.getCancelFlag()) && dto.getCancelFlag().equalsIgnoreCase("Y")) {
+                } else {
                     savedCtThDocUpload.getDocuments()
                             .stream()
-                            .filter(doc -> Objects.equals(doc.getSrlNo(), dto.getSrlNo())
-                                    && "N".equalsIgnoreCase(doc.getCancelFlag()))
+                            .filter(doc -> Objects.equals(doc.getSrlNo(), dto.getSrlNo()))
                             .findFirst()
                             .ifPresent(doc -> {
-                                doc.setCancelFlag("Y");
+                                BeanUtils.copyProperties(dto, doc, "srlNo", "file");
+                                doc.setCancelFlag(dto.getCancelFlag());
                                 doc.setModifiedBy(userId);
                                 doc.setModifiedOn(currentTime);
                             });
                 }
             });
+
+            List<CtTdDocUpload> filtedList = savedCtThDocUpload.getDocuments()
+                    .stream()
+                    .filter(doc -> doc.getCancelFlag().equalsIgnoreCase("N"))
+                    .toList();
+
+            savedCtThDocUpload.setDocuments(filtedList);
 
             result.put("success", ctThDocUploadRepository.save(savedCtThDocUpload));
         }
@@ -209,7 +216,7 @@ public class DocumentUploadService {
         else {
             List<CtTdDocUpload> filtedList = ctThDocUpload != null ? ctThDocUpload.getDocuments()
                     .stream()
-                    .filter(doc -> doc.getAgentCustomerId().equals(agentCode))
+                    .filter(doc -> doc.getAgentCustomerId().equals(agentCode) && doc.getCancelFlag().equalsIgnoreCase("N"))
                     .toList() : null;
 
             if (filtedList == null || filtedList.isEmpty()) result.put("error", "No Document Added Yet");
