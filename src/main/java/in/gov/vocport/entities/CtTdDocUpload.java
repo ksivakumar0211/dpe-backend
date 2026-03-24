@@ -63,6 +63,12 @@ public class CtTdDocUpload {
     @JsonFormat(pattern = "dd/MM/yyyy", shape = JsonFormat.Shape.STRING)
     private LocalDate modifiedOn;
 
+    private String agentCustomerId;
+
+    private String agentCustomerName;
+
+    private String agentCategory;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     @JoinColumn(name = "VESSEL_NO", referencedColumnName = "VESSEL_NO", insertable = false, updatable = false)
