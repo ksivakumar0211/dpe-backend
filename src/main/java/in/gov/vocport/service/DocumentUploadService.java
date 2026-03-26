@@ -206,8 +206,21 @@ public class DocumentUploadService {
 //                    .toList();
 //
 //            savedCtThDocUpload.setDocuments(filtedList);
+            CtThDocUpload ctThDocUpload = new CtThDocUpload();
+            BeanUtils.copyProperties(savedCtThDocUpload, ctThDocUpload, "documents");
+            List<CtTdDocUpload> childList = new ArrayList<>();
+            savedCtThDocUpload.getDocuments().forEach(doc -> {
+                if (doc.getCancelFlag().equalsIgnoreCase("N")) {
+                    CtTdDocUpload detail = new CtTdDocUpload();
+                    BeanUtils.copyProperties(doc, detail, "header");
+                    childList.add(detail);
+                }
+            });
+            ctThDocUpload.setDocuments(childList);
 
-            result.put("success", ctThDocUploadRepository.save(savedCtThDocUpload));
+            ctThDocUploadRepository.save(savedCtThDocUpload);
+
+            result.put("success", ctThDocUpload);
         }
     }
 
