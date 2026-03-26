@@ -20,8 +20,6 @@ import in.gov.vocport.repository.GenericProcedureRepository;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -129,7 +127,7 @@ public class DocumentUploadService {
         }
     }
 
-    public void save(CtThDocUploadRequestDto request, String userId, Map<String, Object> result) {
+    public void save(CtThDocUploadRequestDto request, String userId, String agentCode, Map<String, Object> result) {
         CtThDocUpload savedCtThDocUpload = ctThDocUploadRepository.findById(request.getVesselNo()).orElse(null);
         LocalDate currentTime = LocalDate.now();
         if (savedCtThDocUpload == null) {
@@ -210,7 +208,7 @@ public class DocumentUploadService {
             BeanUtils.copyProperties(savedCtThDocUpload, ctThDocUpload, "documents");
             List<CtTdDocUpload> childList = new ArrayList<>();
             savedCtThDocUpload.getDocuments().forEach(doc -> {
-                if (doc.getCancelFlag().equalsIgnoreCase("N")) {
+                if ((StringUtils.isBlank(agentCode) || agentCode.equalsIgnoreCase(doc.getAgentCustomerId())) && doc.getCancelFlag().equalsIgnoreCase("N")) {
                     CtTdDocUpload detail = new CtTdDocUpload();
                     BeanUtils.copyProperties(doc, detail, "header");
                     childList.add(detail);
