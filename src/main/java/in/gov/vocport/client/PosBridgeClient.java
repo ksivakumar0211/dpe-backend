@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.*;
+
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -101,8 +103,9 @@ public class PosBridgeClient {
         Map<String, Object> request = new HashMap<>();
         request.put("username", username.toString());
         request.put("appKey", appKey.toString());
-        request.put("amount", String.valueOf(amount));
+//        request.put("amount", String.valueOf(amount));
         request.put("externalRefNumber", orderId.toString());
+        request.put("amount", BigDecimal.valueOf(amount));
         request.put("pushTo", Map.of("deviceId", deviceId.toString()));
         request.put("mode", "CARD");
         return request;

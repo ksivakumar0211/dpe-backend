@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -49,5 +50,15 @@ public class DirectPortServiceChargeController {
         Map<String, Object> result = new HashMap<>();
         service.getDeliveryDate(admissionChitNo, result);
         return result.containsKey("error") ? new ResponseEntity<>(result,  HttpStatus.BAD_REQUEST) : new ResponseEntity<>(result,  HttpStatus.OK);
+    }
+
+    @PostMapping("/update/payment-info")
+    public void getUpdatePaymentInfo(@RequestParam String chitNo, @RequestBody List<String> cfsList) {
+        Map<String, Object> resultMap = Map.of(
+                "status", "SUCCESS",
+                "p2pRequestId", "260327130153729E730855262"
+        );
+        service.updatePaymentInfo("PO26030001", cfsList, chitNo, resultMap);
+//        return result.containsKey("error") ? new ResponseEntity<>(result,  HttpStatus.BAD_REQUEST) : new ResponseEntity<>(result,  HttpStatus.OK);
     }
 }

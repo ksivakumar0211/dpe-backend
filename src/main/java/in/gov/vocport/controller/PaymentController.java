@@ -1,11 +1,14 @@
 package in.gov.vocport.controller;
 
 import in.gov.vocport.service.PaymentService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/payments")
+@RequestMapping("/pos")
 public class PaymentController {
 
     private final PaymentService paymentService;
@@ -14,12 +17,13 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
 
-    @PostMapping("/{orderId}")
-    public Map<String, Object> pay(
-            @PathVariable String orderId,
-            @RequestParam double amount) {
+    @PostMapping("/payments")
+    public ResponseEntity<Map<String, Object>> pay(
+            @RequestParam String chitNo,
+            @RequestParam double amount,
+            @RequestBody List<String> cfsNo) {
 
-        return paymentService.processPayment(orderId, amount);
+        return ResponseEntity.ok(paymentService.processPayment(chitNo, amount, cfsNo));
     }
 }
 
