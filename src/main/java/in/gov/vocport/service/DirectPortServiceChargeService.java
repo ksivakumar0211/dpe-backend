@@ -129,4 +129,9 @@ public class DirectPortServiceChargeService {
             });
         }
     }
+
+    public void getAllSearch(Map<String, Object> result) {
+        List<CtThDirectServiceChg> list = headerRepository.findAll();
+        result.put("success", list);
+    }
 }

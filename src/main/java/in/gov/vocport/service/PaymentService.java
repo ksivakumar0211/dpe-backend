@@ -25,7 +25,7 @@ public class PaymentService {
     //Flow need to modified
 
     public Map<String, Object> processPayment(String chitNo, double amount, List<String> cfsNoList) {
-        String orderId = headerRepository.findRefTransNo("PO", LocalDate.now());
+        String orderId = headerRepository.findRefTransNo("POS", LocalDate.now());
 
         Map<String, Object> payResponse =
                 posBridgeClient.initiatePayment(orderId, amount);

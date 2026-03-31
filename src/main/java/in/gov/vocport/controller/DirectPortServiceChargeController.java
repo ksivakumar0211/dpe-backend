@@ -61,4 +61,11 @@ public class DirectPortServiceChargeController {
         service.updatePaymentInfo("PO26030001", cfsList, chitNo, resultMap);
 //        return result.containsKey("error") ? new ResponseEntity<>(result,  HttpStatus.BAD_REQUEST) : new ResponseEntity<>(result,  HttpStatus.OK);
     }
+
+    @GetMapping("/get/all/search")
+    public ResponseEntity getAllSearch() {
+        Map<String, Object> result = new HashMap<>();
+        service.getAllSearch(result);
+        return result.containsKey("error") ? new ResponseEntity<>(result,  HttpStatus.BAD_REQUEST) : new ResponseEntity<>(result,  HttpStatus.OK);
+    }
 }
