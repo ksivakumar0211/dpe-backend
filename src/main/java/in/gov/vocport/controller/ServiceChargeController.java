@@ -33,7 +33,7 @@ public class ServiceChargeController {
                 'DPE',
                 'CT_TD_DIRECT_SERVICE_CHG',
                 'CFS_NO',
-                4,
+                6,
                 SYSDATE
             )
             FROM DUAL
