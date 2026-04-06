@@ -1,7 +1,12 @@
 package in.gov.vocport.report;
 
 
+import in.gov.vocport.dto.ProcedureKeyValueDTO;
 import in.gov.vocport.exception.ReportGenerationException;
+import in.gov.vocport.report.dto.GateInContainerNoPr;
+import in.gov.vocport.report.dto.GateOutContainerNoPr;
+import in.gov.vocport.repository.GenericProcedureRepository;
+import jakarta.persistence.ParameterMode;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import net.sf.jasperreports.engine.*;
@@ -28,6 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ReportGenerator {
     private final DataSource primary;
     private final ExportReport exportReport;
+    private final GenericProcedureRepository genericProcedureRepository;
     private static final Map<String, String> whiteList = Map.ofEntries(Map.entry("sample", "sample"));
 
 
@@ -132,5 +138,23 @@ public class ReportGenerator {
 
     private boolean parameterChecker(Map<String, Object> parameters, List<String> reportParameters) {
         return reportParameters.stream().allMatch(parameters::containsKey);
+    }
+
+    public void gateInContainerNoPr(String containerNo, Map<String, Object> result) {
+        List<ProcedureKeyValueDTO> parameters = new ArrayList<>();
+        parameters.add(new ProcedureKeyValueDTO("p_container_no", containerNo, String.class, ParameterMode.IN));
+        parameters.add(new ProcedureKeyValueDTO("p_refcur_cont_dpe_in_time", null, void.class, ParameterMode.REF_CURSOR));
+
+        List<GateInContainerNoPr> gateInContainerNos = (List<GateInContainerNoPr>) genericProcedureRepository.callStoredProcedure("CT_DPE_PKG.GET_CONT_DPE_IN_TIME_PR", parameters, new ArrayList<GateInContainerNoPr>(), "gateInContainerNoPr");
+        result.put("success", gateInContainerNos);
+    }
+
+    public void gateOutContainerNoPr(String containerNo, Map<String, Object> result) {
+        List<ProcedureKeyValueDTO> parameters = new ArrayList<>();
+        parameters.add(new ProcedureKeyValueDTO("p_container_no", containerNo, String.class, ParameterMode.IN));
+        parameters.add(new ProcedureKeyValueDTO("p_refcur_cont_dpe_out_time", null, void.class, ParameterMode.REF_CURSOR));
+
+        List<GateOutContainerNoPr> gateOutContainerNos = (List<GateOutContainerNoPr>) genericProcedureRepository.callStoredProcedure("CT_DPE_PKG.GET_CONT_DPE_IN_TIME_PR", parameters, new ArrayList<GateOutContainerNoPr>(), "gateOutContainerNoPr");
+        result.put("success", gateOutContainerNos);
     }
 }

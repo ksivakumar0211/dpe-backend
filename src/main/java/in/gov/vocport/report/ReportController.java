@@ -2,11 +2,13 @@ package in.gov.vocport.report;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -31,5 +33,20 @@ public class ReportController {
             response.getWriter().write(exception.getMessage());
             response.getWriter().flush();
         }
+    }
+
+
+    @GetMapping("/get-in/container-pr")
+    public ResponseEntity gateInContainerNoPr(@RequestParam(required = false) String containerNo) throws IOException {
+        Map<String, Object> result = new HashMap<>();
+        reportService.gateInContainerNoPr(containerNo, result);
+        return result.containsKey("success") ? new ResponseEntity<>(result, HttpStatus.OK) : new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping ("/get-out/container-pr")
+    public ResponseEntity gateOutContainerNoPr(@RequestParam(required = false) String containerNo) throws IOException {
+        Map<String, Object> result = new HashMap<>();
+        reportService.gateOutContainerNoPr(containerNo, result);
+        return result.containsKey("success") ? new ResponseEntity<>(result, HttpStatus.OK) : new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
     }
 }
