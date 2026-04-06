@@ -86,6 +86,8 @@ public class DirectPortServiceChargeService {
 
             CtThDirectServiceChg savedHeader = headerRepository.save(alreadySavedHeader);
             if (!cfsList.isEmpty()) service.populateInInvoiceTable(cfsList, userId);
+            if (savedHeader.getServiceDetails() != null)savedHeader.getServiceDetails()
+                    .sort(Comparator.comparing(v -> ((CtTdDirectServiceChg)v).getId().getSrlNo()));
             result.put("success", savedHeader);
         }
     }
@@ -99,7 +101,7 @@ public class DirectPortServiceChargeService {
             });
         }
         if (ctThDirectServiceChg != null && ctThDirectServiceChg.getServiceDetails() != null)ctThDirectServiceChg.getServiceDetails()
-                .sort(Comparator.comparing(v -> ((CtTdDirectServiceChg)v).getId().getSrlNo()).reversed());
+                .sort(Comparator.comparing(v -> ((CtTdDirectServiceChg)v).getId().getSrlNo()));
 
         result.put("success", ctThDirectServiceChg);
     }
