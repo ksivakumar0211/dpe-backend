@@ -154,7 +154,7 @@ public class ReportGenerator {
         parameters.add(new ProcedureKeyValueDTO("p_container_no", containerNo, String.class, ParameterMode.IN));
         parameters.add(new ProcedureKeyValueDTO("p_refcur_cont_dpe_out_time", null, void.class, ParameterMode.REF_CURSOR));
 
-        List<GateOutContainerNoPr> gateOutContainerNos = (List<GateOutContainerNoPr>) genericProcedureRepository.callStoredProcedure("CT_DPE_PKG.GET_CONT_DPE_IN_TIME_PR", parameters, new ArrayList<GateOutContainerNoPr>(), "gateOutContainerNoPr");
+        List<GateOutContainerNoPr> gateOutContainerNos = (List<GateOutContainerNoPr>) genericProcedureRepository.callStoredProcedure("CT_DPE_PKG.GET_CONT_DPE_OUT_TIME_PR", parameters, new ArrayList<GateOutContainerNoPr>(), "gateOutContainerNoPr");
         result.put("success", gateOutContainerNos);
     }
 }
