@@ -16,6 +16,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,7 @@ public class DirectPortServiceChargeService {
     private final AsynchronousService service;
     private final GenericProcedureRepository genericProcedureRepository;
 
-    public void addServiceCharge(/*Map<String, Object> object, String userId, Map<String, Object> result*/CtThDirectServiceChg header, String userId, Map<String, Object> result) {
+    public void addServiceCharge(CtThDirectServiceChg header, String userId, Map<String, Object> result) {
         List<String> cfsList = new ArrayList<>();
         CtThDirectServiceChg alreadySavedHeader = headerRepository.findById(header.getChitNo()).orElse(null);
         if (alreadySavedHeader == null) {
@@ -114,7 +115,7 @@ public class DirectPortServiceChargeService {
                 if (cfsNoList.contains(dtls.getCfsNo())) {
                     dtls.setE2pRequestId((String) resultMap.get("p2pRequestId"));
                     dtls.setPaymentNo((String) resultMap.get("p2pRequestId"));
-                    dtls.setPaymentDate(LocalDate.now());
+                    dtls.setPaymentDate(LocalDateTime.now());
                     dtls.setRefTranNo(orderId);
                     dtls.setStatus((String) resultMap.get("status"));
                 }

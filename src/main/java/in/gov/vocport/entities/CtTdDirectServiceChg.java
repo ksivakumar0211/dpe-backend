@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
@@ -57,8 +58,8 @@ public class CtTdDirectServiceChg {
     private String paymentNo;
 
     @Column(name = "PAYMENT_DATE")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    private LocalDate paymentDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime paymentDate;
 
     @Column(name = "SERVICE_REMARKS", length = 1000)
     private String serviceRemarks;
