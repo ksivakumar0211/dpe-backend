@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
@@ -97,6 +98,9 @@ public class DirectPortServiceChargeService {
                 dtls.setPaymentDate(headerRepository.findPaymentDate(dtls.getCfsNo()));
             });
         }
+        if (ctThDirectServiceChg != null && ctThDirectServiceChg.getServiceDetails() != null)ctThDirectServiceChg.getServiceDetails()
+                .sort(Comparator.comparing(v -> ((CtTdDirectServiceChg)v).getId().getSrlNo()).reversed());
+
         result.put("success", ctThDirectServiceChg);
     }
 
