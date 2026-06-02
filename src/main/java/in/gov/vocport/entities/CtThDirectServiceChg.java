@@ -46,6 +46,8 @@ public class CtThDirectServiceChg {
     @Column(name = "ZONE_ID", length = 10)
     private String zoneId;
 
+    private String leo;
+
     @Column(name = "CREATED_BY", length = 10)
     private String createdBy;
 

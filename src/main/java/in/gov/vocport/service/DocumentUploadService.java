@@ -14,8 +14,10 @@ import in.gov.vocport.config.SmbProperties;
 import in.gov.vocport.dto.*;
 import in.gov.vocport.entities.CtTdDocUpload;
 import in.gov.vocport.entities.CtThDocUpload;
+import in.gov.vocport.entities.DpeDocUploadConfig;
 import in.gov.vocport.repository.CommonSearchOptionRepository;
 import in.gov.vocport.repository.CtThDocUploadRepository;
+import in.gov.vocport.repository.DocUploadConfigRepository;
 import in.gov.vocport.repository.GenericProcedureRepository;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +43,7 @@ public class DocumentUploadService {
     private final SmbProperties properties;
     private final ObjectMapper mapper;
     private final CommonSearchOptionRepository commonSearchOptionRepository;
+    private final DocUploadConfigRepository configRepository;
 
     public void getVesselsNo(String vesselsNo, int page, int size, Map<String, Object> result) {
 //        List<ProcedureKeyValueDTO> parameters = new ArrayList<>();
@@ -60,16 +63,17 @@ public class DocumentUploadService {
     }
 
     public void uploadFile(MultipartFile file, Map<String, Object> result) throws IOException {
+        DpeDocUploadConfig config = configRepository.findAll().get(0);
         SMBClient client = new SMBClient();
 
-        try (Connection connection = client.connect(properties.getServer())) {
+        try (Connection connection = client.connect(config.getServerIp())) {
 
             AuthenticationContext ac =
-                    new AuthenticationContext(properties.getUsername(), properties.getPassword().toCharArray(), "");
+                    new AuthenticationContext(config.getUsername(), config.getPasscode().toCharArray(), "");
 
             Session session = connection.authenticate(ac);
 
-            try (DiskShare diskShare = (DiskShare) session.connectShare(properties.getShare())) {
+            try (DiskShare diskShare = (DiskShare) session.connectShare(config.getShareInfo())) {
                 String name = String.valueOf(LocalDateTime.now()).replace('/', '-').concat("_").concat(file.getOriginalFilename());
                 String fileName = name.replace(':', '-');
 
@@ -95,19 +99,20 @@ public class DocumentUploadService {
     }
 
     public byte[] downloadableFiles(String fileName) throws IOException {
+        DpeDocUploadConfig config = configRepository.findAll().get(0);
         SMBClient client = new SMBClient();
 
-        try (Connection connection = client.connect(properties.getServer())) {
+        try (Connection connection = client.connect(config.getServerIp())) {
 
             AuthenticationContext ac = new AuthenticationContext(
-                    properties.getUsername(),
-                    properties.getPassword().toCharArray(),
+                    config.getUsername(),
+                    config.getPasscode().toCharArray(),
                     ""
             );
 
             Session session = connection.authenticate(ac);
 
-            try (DiskShare share = (DiskShare) session.connectShare(properties.getShare())) {
+            try (DiskShare share = (DiskShare) session.connectShare(config.getShareInfo())) {
 
                 File file = share.openFile(
                         fileName,
@@ -128,6 +133,7 @@ public class DocumentUploadService {
     }
 
     public void save(CtThDocUploadRequestDto request, String userId, String agentCode, Map<String, Object> result) {
+        DpeDocUploadConfig config = configRepository.findAll().get(0);
         CtThDocUpload savedCtThDocUpload = ctThDocUploadRepository.findById(request.getVesselNo()).orElse(null);
         LocalDate currentTime = LocalDate.now();
         if (savedCtThDocUpload == null) {
@@ -141,7 +147,7 @@ public class DocumentUploadService {
                 MultipartFile file = dto.getFile();
                 ctTdDocUpload.setCreatedBy(userId);
                 ctTdDocUpload.setCreatedOn(currentTime);
-                ctTdDocUpload.setDccUploadPath(properties.getPath());
+                ctTdDocUpload.setDccUploadPath(config.getPath());
                 Map<String, Object> resp = new HashMap<>();
                 try {
                     uploadFile(file, resp);
@@ -170,7 +176,7 @@ public class DocumentUploadService {
                     MultipartFile file = dto.getFile();
                     ctTdDocUpload.setCreatedBy(userId);
                     ctTdDocUpload.setCreatedOn(LocalDate.now());
-                    ctTdDocUpload.setDccUploadPath(properties.getPath());
+                    ctTdDocUpload.setDccUploadPath(config.getPath());
                     Map<String, Object> resp = new HashMap<>();
                     try {
                         uploadFile(file, resp);
