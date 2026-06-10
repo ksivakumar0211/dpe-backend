@@ -149,6 +149,10 @@ public class ContainerGateOutService {
 		result.put("success", repository.findGetOutPaymentStatus(containerNo));
     }
 
+	public void getOutLeoStatus(String containerNo, Map<String, Object> result) {
+		result.put("success", repository.findGetOutLeoStatus(containerNo));
+	}
+
 	public void getAllContainer(String containerNo, Map<String, Object> result) {
 		List<ProcedureKeyValueDTO> parameters = new ArrayList<>();
 		parameters.add(new ProcedureKeyValueDTO("p_container_no", StringUtils.isBlank(containerNo) ? null : containerNo, String.class, ParameterMode.IN));

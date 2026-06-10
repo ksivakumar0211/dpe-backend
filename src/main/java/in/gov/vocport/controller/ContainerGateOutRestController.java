@@ -79,6 +79,13 @@ public class ContainerGateOutRestController {
 		return result.containsKey("error") ? new ResponseEntity<>(result,  HttpStatus.BAD_REQUEST) : new ResponseEntity<>(result,  HttpStatus.OK);
 	}
 
+	@GetMapping("/getout-leo-status")
+	public ResponseEntity getOutLeoStatus(@RequestParam String containerNo) {
+		Map<String, Object> result = new HashMap<>();
+		service.getOutLeoStatus(containerNo, result);
+		return result.containsKey("error") ? new ResponseEntity<>(result,  HttpStatus.BAD_REQUEST) : new ResponseEntity<>(result,  HttpStatus.OK);
+	}
+
 	@GetMapping("/get-container")
 	public ResponseEntity getAllContainer(@RequestParam(required = false) String containerNo) {
 		Map<String, Object> result = new HashMap<>();
