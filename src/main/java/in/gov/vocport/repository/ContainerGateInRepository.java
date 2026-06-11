@@ -19,5 +19,5 @@ public interface ContainerGateInRepository extends JpaRepository<ContainerGateIn
 	String findGetOutPaymentStatus(@Param("p_container_no") String containerNo);
 
 	@Query(value = "SELECT CT_DPE_PKG.FN_LEO_STATUS_CHECK(:p_container_no) FROM dual", nativeQuery = true)
-	Object findGetOutLeoStatus(String containerNo);
+	Object findGetOutLeoStatus(@Param("p_container_no") String containerNo);
 }
