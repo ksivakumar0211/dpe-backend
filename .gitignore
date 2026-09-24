@@ -14,3 +14,6 @@ pom.xml
 .idea/misc.xml
 .classpath
 .factorypath
+.project
+.factorypath
+.classpath
