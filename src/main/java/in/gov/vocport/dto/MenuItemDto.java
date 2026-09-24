@@ -1,20 +1,23 @@
 package in.gov.vocport.dto;
 
-import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class MenuItemDto {
+	/**
+	 * 
+	 */
 	private String moduleId;
 	private String menuId;
 	private String parentMenuId;

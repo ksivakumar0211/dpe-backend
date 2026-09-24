@@ -60,8 +60,10 @@ public class PmsApplication {
 	}
 
 	private void prepareJasperFileSet(Set<String> jasperSet, File[] jasperFiles) {
-		Arrays.stream(jasperFiles).forEach(file ->
-				jasperSet.add(file.getName())
-		);
+		if (jasperFiles != null) {
+			Arrays.stream(jasperFiles).forEach(file ->
+					jasperSet.add(file.getName())
+			);
+		}
 	}
 }

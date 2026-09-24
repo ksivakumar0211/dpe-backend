@@ -16,7 +16,8 @@ public class ProcedureKeyValueDTO {
     private Class parameterValueType;
     private ParameterMode parameterMode;
 
-    public <T> T getCastedValue() {
+    @SuppressWarnings("unchecked")
+	public <T> T getCastedValue() {
         return (T) parameterValueType.cast(parameterValue);
     }
 }

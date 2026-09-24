@@ -4,6 +4,7 @@ import in.gov.vocport.dto.AllMenuDto;
 import in.gov.vocport.dto.ProcedureKeyValueDTO;
 import in.gov.vocport.repository.GenericProcedureRepository;
 import jakarta.persistence.ParameterMode;
+import lombok.Data;
 import oracle.jdbc.OracleTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import java.sql.*;
 import java.util.*;
 
 @Service
+@Data
 public class MenuService {
 
 	private static final Logger logger = LoggerFactory.getLogger(MenuService.class);

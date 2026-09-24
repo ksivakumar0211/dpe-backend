@@ -1,17 +1,28 @@
 package in.gov.vocport.repository;
 
-import in.gov.vocport.dto.*;
-import oracle.jdbc.OracleTypes;
-import org.springframework.data.domain.Page;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
+import in.gov.vocport.dto.AgentDto;
+import in.gov.vocport.dto.AgentProjection;
+import in.gov.vocport.dto.CargoDto;
+import in.gov.vocport.dto.ContainerInPortDto;
+import in.gov.vocport.dto.ContainerNoDto;
+import in.gov.vocport.dto.LinerDto;
+import in.gov.vocport.dto.LocationDto;
+import in.gov.vocport.dto.PagedResponse;
+import in.gov.vocport.dto.PortDto;
+import in.gov.vocport.dto.ShipperDto;
+import in.gov.vocport.dto.VesselDto;
+import in.gov.vocport.dto.VesselsInfoDto;
+import oracle.jdbc.OracleTypes;
 
 @Repository
 public class CommonSearchOptionRepository {
