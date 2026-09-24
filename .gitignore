@@ -1,2 +1,16 @@
 /target
 /.settings
+.classpath
+.factorypath
+.project
+package-lock.json
+pom.xml
+.idea/misc.xml
+.vscode/settings.json
+.classpath
+.factorypath
+.project
+pom.xml
+.idea/misc.xml
+.classpath
+.factorypath
