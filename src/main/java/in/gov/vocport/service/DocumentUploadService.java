@@ -150,13 +150,15 @@ public class DocumentUploadService {
                 ctTdDocUpload.setDccUploadPath(config.getPath());
                 Map<String, Object> resp = new HashMap<>();
                 try {
-                    uploadFile(file, resp);
+                    if (file != null)uploadFile(file, resp);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
                 if (resp.containsKey("error")) throw new RuntimeException("Unable to save the document");
-                ctTdDocUpload.setDccFileName((String) resp.get("fileName"));
-                ctTdDocUpload.setDccDownLink((String) resp.get("fileName"));
+                if (!resp.isEmpty() && !resp.containsKey("error")) {
+                    ctTdDocUpload.setDccFileName((String) resp.get("fileName"));
+                    ctTdDocUpload.setDccDownLink((String) resp.get("fileName"));
+                }
                 ctTdDocUpload.setVesselNo(ctThDocUpload.getVesselNo());
                 ctTdDocUpload.setSrlNo(srlNo.get());
                 srlNo.updateAndGet(v -> v + 1);
@@ -179,13 +181,17 @@ public class DocumentUploadService {
                     ctTdDocUpload.setDccUploadPath(config.getPath());
                     Map<String, Object> resp = new HashMap<>();
                     try {
-                        uploadFile(file, resp);
+                        if (file != null) uploadFile(file, resp);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
                     if (resp.containsKey("error")) throw new RuntimeException("Unable to save the document");
-                    ctTdDocUpload.setDccFileName((String) resp.get("fileName"));
-                    ctTdDocUpload.setDccDownLink((String) resp.get("fileName"));
+                    if (!resp.isEmpty() && !resp.containsKey("error")) {
+                        ctTdDocUpload.setDccFileName((String) resp.get("fileName"));
+                        ctTdDocUpload.setDccDownLink((String) resp.get("fileName"));
+                    }
+//                    ctTdDocUpload.setDccFileName((String) resp.get("fileName"));
+//                    ctTdDocUpload.setDccDownLink((String) resp.get("fileName"));
                     ctTdDocUpload.setVesselNo(savedCtThDocUpload.getVesselNo());
                     ctTdDocUpload.setSrlNo(srlNo.get());
                     srlNo.updateAndGet(v -> v + 1);
